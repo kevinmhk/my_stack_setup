@@ -311,6 +311,32 @@ install_or_notify_tailscale() {
   fi
 }
 
+install_vim_plug() {
+  local plug_path="${HOME}/.vim/autoload/plug.vim"
+  if [ -f "$plug_path" ]; then
+    log "vim-plug already installed."
+    return 0
+  fi
+
+  if ! command_exists curl; then
+    abort "curl is required to install vim-plug."
+  fi
+
+  log "Installing vim-plug..."
+  run curl -fLo "$plug_path" --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+}
+
+remind_vim_plug_install() {
+  local message="Reminder: Run :PlugInstall in Vim after opening it."
+  log "$message"
+  if [ -t 1 ] && [ -w /dev/tty ]; then
+    printf '\033[31m%s\033[0m\n' "$message" > /dev/tty
+  else
+    printf '\033[31m%s\033[0m\n' "$message"
+  fi
+}
+
 ensure_workspaces_dir() {
   local workspace_dir="${HOME}/workspaces"
   if [ -d "$workspace_dir" ]; then
@@ -341,7 +367,9 @@ main() {
   install_chezmoi_and_apply
   install_agent_browser_runtime
   install_or_notify_tailscale
+  install_vim_plug
   ensure_workspaces_dir
+  remind_vim_plug_install
 
   log "Base setup complete."
 }

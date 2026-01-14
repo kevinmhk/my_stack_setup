@@ -199,6 +199,9 @@ main() {
   if [ ! -d "$HOME/workspaces" ]; then
     record_failure "Workspace directory missing at ${HOME}/workspaces"
   fi
+  if [ ! -f "$HOME/.vim/autoload/plug.vim" ]; then
+    record_failure "vim-plug missing at ${HOME}/.vim/autoload/plug.vim"
+  fi
   if [ "$OS_NAME" = "Linux" ]; then
     if is_container; then
       log "Container detected: skipping Tailscale assertion."
