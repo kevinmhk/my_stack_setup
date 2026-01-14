@@ -94,7 +94,8 @@ tests/assert.sh
 Container tests (Ubuntu + CentOS):
 
 ```bash
-scripts/test-containers.sh
+scripts/test-containers.sh ubuntu
+scripts/test-containers.sh centos
 ```
 
 Before running container tests, start Docker Desktop.

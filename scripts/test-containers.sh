@@ -41,8 +41,21 @@ run_image() {
 main() {
   require_docker
 
-  run_image "ubuntu" "${REPO_ROOT}/tests/docker/ubuntu/Dockerfile"
-  run_image "centos" "${REPO_ROOT}/tests/docker/centos/Dockerfile"
+  if [ "$#" -ne 1 ]; then
+    abort "Usage: $(basename "$0") <ubuntu|centos>"
+  fi
+
+  case "$1" in
+    ubuntu)
+      run_image "ubuntu" "${REPO_ROOT}/tests/docker/ubuntu/Dockerfile"
+      ;;
+    centos)
+      run_image "centos" "${REPO_ROOT}/tests/docker/centos/Dockerfile"
+      ;;
+    *)
+      abort "Invalid target: $1. Use ubuntu or centos."
+      ;;
+  esac
 
   log "Container tests completed."
 }
