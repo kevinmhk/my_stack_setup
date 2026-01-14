@@ -55,6 +55,7 @@ Homebrew casks (macOS only):
 
 npm globals:
 - @google/gemini-cli
+- agent-browser
 - bun
 - firebase-tools
 - @openai/codex (Linux only)

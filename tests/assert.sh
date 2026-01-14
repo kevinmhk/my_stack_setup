@@ -177,6 +177,7 @@ main() {
 
   local npm_packages=(
     @google/gemini-cli
+    agent-browser
     bun
     firebase-tools
   )

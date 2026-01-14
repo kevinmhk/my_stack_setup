@@ -220,6 +220,7 @@ install_nvm_and_node() {
 install_npm_globals() {
   local npm_packages=(
     @google/gemini-cli
+    agent-browser
     bun
     firebase-tools
   )
@@ -252,6 +253,17 @@ install_chezmoi_and_apply() {
   run chezmoi init --apply "$DOTFILES_REPO_URL"
 }
 
+install_agent_browser_runtime() {
+  if ! command_exists agent-browser; then
+    abort "agent-browser is not available after installation."
+  fi
+
+  log "Installing agent-browser runtime dependencies..."
+  if ! printf 'y\n' | agent-browser install; then
+    abort "agent-browser install failed."
+  fi
+}
+
 main() {
   setup_logging
   ensure_brew_shellenv
@@ -269,6 +281,7 @@ main() {
   install_npm_globals
   install_oh_my_zsh
   install_chezmoi_and_apply
+  install_agent_browser_runtime
 
   log "Base setup complete."
 }
