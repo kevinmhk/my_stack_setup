@@ -392,8 +392,29 @@ install_vim_plug() {
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 }
 
+install_nvchad() {
+  local nvim_dir="${HOME}/.config/nvim"
+
+  if [ -d "$nvim_dir" ]; then
+    log "NvChad already installed at ${nvim_dir}."
+    return 0
+  fi
+
+  if ! command_exists git; then
+    abort "git is required to install NvChad."
+  fi
+
+  log "Installing NvChad starter config..."
+  run mkdir -p "${HOME}/.config"
+  run git clone https://github.com/NvChad/starter "$nvim_dir"
+}
+
 remind_vim_plug_install() {
   add_reminder "Reminder: Run :PlugInstall in Vim after opening it."
+}
+
+remind_mason_install_all() {
+  add_reminder "Reminder: Run :MasonInstallAll in Neovim after opening it."
 }
 
 remind_env_onboarding() {
@@ -432,8 +453,10 @@ main() {
   install_agent_browser_runtime
   install_or_notify_tailscale
   install_vim_plug
+  install_nvchad
   ensure_workspaces_dir
   remind_vim_plug_install
+  remind_mason_install_all
   remind_env_onboarding
   log "Base setup complete."
   print_reminders

@@ -254,6 +254,9 @@ main() {
   if [ ! -f "$HOME/.vim/autoload/plug.vim" ]; then
     record_failure "vim-plug missing at ${HOME}/.vim/autoload/plug.vim"
   fi
+  if [ ! -d "$HOME/.config/nvim" ]; then
+    record_failure "NvChad missing at ${HOME}/.config/nvim"
+  fi
   if [ "$OS_NAME" = "Linux" ]; then
     if is_container; then
       log "Container detected: skipping Tailscale assertion."
