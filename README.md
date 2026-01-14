@@ -23,6 +23,7 @@ A non-interactive setup script for macOS and Linux that installs Homebrew, core 
 ## Installed Packages
 
 Homebrew formulae:
+- age
 - bat
 - chezmoi
 - fd

@@ -4,7 +4,7 @@ set -euo pipefail
 # Non-interactive by default
 export NONINTERACTIVE=1
 
-DOTFILES_REPO_URL="https://github.com/kevinmhk/dotfiles"
+DOTFILES_REPO_URL="https://github.com/kevinmhk/dotfiles.git"
 OS_NAME="$(uname -s)"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LOG_DIR="${LOG_DIR:-${SCRIPT_DIR}/../logs}"
@@ -97,6 +97,7 @@ brew_cask_install_if_missing() {
 
 install_brew_formulae() {
   local formulae=(
+    age
     bat
     chezmoi
     fd

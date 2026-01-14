@@ -131,6 +131,7 @@ main() {
   assert_command npm || true
 
   local formulae=(
+    age
     bat
     chezmoi
     fd
