@@ -1,0 +1,11 @@
+.cache/
+.venv/
+build/
+dist/
+logs/
+tmp/
+.DS_Store
+*.log
+*.bak
+.env
+.env.*

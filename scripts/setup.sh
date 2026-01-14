@@ -157,10 +157,19 @@ install_nvm_and_node() {
     abort "nvm.sh not found at ${nvm_sh}"
   fi
 
+  local had_nounset=0
+  if set -o | grep -q 'nounset[[:space:]]*on'; then
+    had_nounset=1
+    set +u
+  fi
+
   # shellcheck source=/dev/null
   . "$nvm_sh"
 
   if ! command_exists nvm; then
+    if [ "$had_nounset" -eq 1 ]; then
+      set -u
+    fi
     abort "nvm is not available after installation."
   fi
 
@@ -169,7 +178,14 @@ install_nvm_and_node() {
   run nvm use --lts
 
   if ! command_exists npm; then
+    if [ "$had_nounset" -eq 1 ]; then
+      set -u
+    fi
     abort "npm is not available after installing Node.js."
+  fi
+
+  if [ "$had_nounset" -eq 1 ]; then
+    set -u
   fi
 }
 
@@ -177,7 +193,7 @@ install_npm_globals() {
   local npm_packages=(
     @google/gemini-cli
     bun
-    firebase-tool
+    firebase-tools
   )
 
   if [ "$OS_NAME" != "Darwin" ]; then

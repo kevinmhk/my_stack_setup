@@ -51,7 +51,7 @@ Homebrew casks (macOS only):
 npm globals:
 - @google/gemini-cli
 - bun
-- firebase-tool
+- firebase-tools
 - @openai/codex (Linux only)
 
 ## Usage
@@ -69,6 +69,22 @@ scripts/setup.sh
 - Override with environment variables:
   - `LOG_DIR`
   - `LOG_FILE`
+
+## Testing
+
+Assertions:
+
+```bash
+tests/assert.sh
+```
+
+Container tests (Ubuntu + CentOS):
+
+```bash
+scripts/test-containers.sh
+```
+
+Before running container tests, start Docker Desktop.
 
 ## Notes
 
