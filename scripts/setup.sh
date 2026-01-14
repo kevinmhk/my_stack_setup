@@ -40,6 +40,27 @@ is_container() {
   return 1
 }
 
+REMINDERS=()
+
+add_reminder() {
+  REMINDERS+=("$1")
+}
+
+print_reminders() {
+  if [ "${#REMINDERS[@]}" -eq 0 ]; then
+    return 0
+  fi
+
+  local message
+  for message in "${REMINDERS[@]}"; do
+    if [ -t 1 ]; then
+      printf '\033[31m%s\033[0m\n' "$message"
+    else
+      printf '%s\n' "$message"
+    fi
+  done
+}
+
 ensure_xcode_cli_tools() {
   if [ "$OS_NAME" != "Darwin" ]; then
     return 0
@@ -331,11 +352,7 @@ install_agent_browser_runtime() {
 install_or_notify_tailscale() {
   if [ "$OS_NAME" = "Darwin" ]; then
     log "Tailscale is not installed by this script on macOS."
-    if [ -t 1 ] && [ -w /dev/tty ]; then
-      printf '\033[31m%s\033[0m\n' "Reminder: Download and install Tailscale for macOS." > /dev/tty
-    else
-      printf '\033[31m%s\033[0m\n' "Reminder: Download and install Tailscale for macOS."
-    fi
+    add_reminder "Reminder: Download and install Tailscale for macOS."
     return 0
   fi
 
@@ -376,23 +393,11 @@ install_vim_plug() {
 }
 
 remind_vim_plug_install() {
-  local message="Reminder: Run :PlugInstall in Vim after opening it."
-  log "$message"
-  if [ -t 1 ] && [ -w /dev/tty ]; then
-    printf '\033[31m%s\033[0m\n' "$message" > /dev/tty
-  else
-    printf '\033[31m%s\033[0m\n' "$message"
-  fi
+  add_reminder "Reminder: Run :PlugInstall in Vim after opening it."
 }
 
 remind_env_onboarding() {
-  local message="Reminder: Manually onboard your .env file to ${HOME}."
-  log "$message"
-  if [ -t 1 ] && [ -w /dev/tty ]; then
-    printf '\033[31m%s\033[0m\n' "$message" > /dev/tty
-  else
-    printf '\033[31m%s\033[0m\n' "$message"
-  fi
+  add_reminder "Reminder: Manually onboard your .env file to ${HOME}."
 }
 
 ensure_workspaces_dir() {
@@ -430,8 +435,8 @@ main() {
   ensure_workspaces_dir
   remind_vim_plug_install
   remind_env_onboarding
-
   log "Base setup complete."
+  print_reminders
 }
 
 main "$@"
