@@ -16,6 +16,7 @@ A non-interactive setup script for macOS and Linux that installs Homebrew, core 
 - Installs Homebrew casks on macOS only
 - Installs nvm and latest LTS Node.js
 - Installs npm global packages
+- Installs oh-my-zsh
 - Installs chezmoi and applies dotfiles from `https://github.com/kevinmhk/dotfiles`
 - Logs to stdout and to a timestamped file in `logs/`
 
@@ -39,13 +40,16 @@ Homebrew formulae:
 - uv
 - yazi
 - zellij
+- zsh
 
 Homebrew casks (macOS only):
 - 1password-cli
 - codex
 - dockdoor
+- droid
 - font-hack-nerd-font
 - font-0xproto-nerd-font
+- ghostty
 - warp
 
 npm globals:

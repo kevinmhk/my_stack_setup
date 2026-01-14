@@ -148,6 +148,7 @@ main() {
     uv
     yazi
     zellij
+    zsh
   )
 
   local pkg
@@ -160,8 +161,10 @@ main() {
       1password-cli
       codex
       dockdoor
+      droid
       font-hack-nerd-font
       font-0xproto-nerd-font
+      ghostty
       warp
     )
 
@@ -186,6 +189,9 @@ main() {
   done
 
   assert_command chezmoi || true
+  if [ ! -d "$HOME/.oh-my-zsh" ]; then
+    record_failure "oh-my-zsh not installed at ${HOME}/.oh-my-zsh"
+  fi
 
   if [ "${#FAILURES[@]}" -gt 0 ]; then
     mkdir -p "$LOG_DIR"

@@ -114,12 +114,37 @@ install_brew_formulae() {
     uv
     yazi
     zellij
+    zsh
   )
 
   local pkg
   for pkg in "${formulae[@]}"; do
     brew_install_if_missing "$pkg"
   done
+}
+
+install_oh_my_zsh() {
+  local omz_dir="$HOME/.oh-my-zsh"
+
+  if [ -d "$omz_dir" ]; then
+    log "oh-my-zsh already installed."
+    return 0
+  fi
+
+  if ! command_exists zsh; then
+    brew_install_if_missing zsh
+  fi
+
+  log "Installing oh-my-zsh..."
+  if command_exists curl; then
+    RUNZSH=no CHSH=no KEEP_ZSHRC=yes \
+      run sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  elif command_exists wget; then
+    RUNZSH=no CHSH=no KEEP_ZSHRC=yes \
+      run sh -c "$(wget -qO- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  else
+    abort "Neither curl nor wget is available to install oh-my-zsh."
+  fi
 }
 
 install_brew_casks() {
@@ -134,8 +159,10 @@ install_brew_casks() {
     1password-cli
     codex
     dockdoor
+    droid
     font-hack-nerd-font
     font-0xproto-nerd-font
+    ghostty
     warp
   )
 
@@ -239,6 +266,7 @@ main() {
   install_brew_casks
   install_nvm_and_node
   install_npm_globals
+  install_oh_my_zsh
   install_chezmoi_and_apply
 
   log "Base setup complete."
