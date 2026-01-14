@@ -96,6 +96,8 @@ Container tests (Ubuntu + CentOS):
 ```bash
 scripts/test-containers.sh ubuntu
 scripts/test-containers.sh centos
+scripts/test-containers.sh --all
+scripts/test-containers.sh --help
 ```
 
 Before running container tests, start Docker Desktop.

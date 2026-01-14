@@ -14,6 +14,18 @@ abort() {
   exit 1
 }
 
+usage() {
+  cat <<EOF
+Usage: $(basename "$0") <ubuntu|centos|--all|--help>
+
+Options:
+  ubuntu   Run Ubuntu container test
+  centos   Run CentOS container test
+  --all    Run all container tests
+  --help   Show this help message
+EOF
+}
+
 require_docker() {
   if ! command -v docker >/dev/null 2>&1; then
     abort "Docker is not installed. Install Docker Desktop and retry."
@@ -42,7 +54,8 @@ main() {
   require_docker
 
   if [ "$#" -ne 1 ]; then
-    abort "Usage: $(basename "$0") <ubuntu|centos>"
+    usage >&2
+    abort "Invalid arguments. Use --help for usage."
   fi
 
   case "$1" in
@@ -52,8 +65,17 @@ main() {
     centos)
       run_image "centos" "${REPO_ROOT}/tests/docker/centos/Dockerfile"
       ;;
+    --all)
+      run_image "ubuntu" "${REPO_ROOT}/tests/docker/ubuntu/Dockerfile"
+      run_image "centos" "${REPO_ROOT}/tests/docker/centos/Dockerfile"
+      ;;
+    --help)
+      usage
+      exit 0
+      ;;
     *)
-      abort "Invalid target: $1. Use ubuntu or centos."
+      usage >&2
+      abort "Invalid target: $1. Use ubuntu, centos, or --all."
       ;;
   esac
 
