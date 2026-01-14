@@ -33,6 +33,13 @@ command_exists() {
   command -v "$1" >/dev/null 2>&1
 }
 
+is_container() {
+  if [ -f /.dockerenv ] || [ -f /run/.containerenv ]; then
+    return 0
+  fi
+  return 1
+}
+
 install_homebrew() {
   if command_exists brew; then
     return 0
@@ -273,6 +280,48 @@ install_agent_browser_runtime() {
   fi
 }
 
+install_or_notify_tailscale() {
+  if [ "$OS_NAME" = "Darwin" ]; then
+    log "Tailscale is not installed by this script on macOS."
+    if [ -t 1 ] && [ -w /dev/tty ]; then
+      printf '\033[31m%s\033[0m\n' "Reminder: Download and install Tailscale for macOS." > /dev/tty
+    else
+      printf '\033[31m%s\033[0m\n' "Reminder: Download and install Tailscale for macOS."
+    fi
+    return 0
+  fi
+
+  if [ "$OS_NAME" = "Linux" ]; then
+    if command_exists tailscale; then
+      log "Tailscale already installed."
+      return 0
+    fi
+
+    if is_container; then
+      log "Skipping Tailscale install in container environment."
+      return 0
+    fi
+
+    log "Installing Tailscale..."
+    if command_exists curl; then
+      run sh -c "curl -fsSL https://tailscale.com/install.sh | sh"
+    else
+      abort "curl is required to install Tailscale."
+    fi
+  fi
+}
+
+ensure_workspaces_dir() {
+  local workspace_dir="${HOME}/workspaces"
+  if [ -d "$workspace_dir" ]; then
+    log "Workspace directory exists: ${workspace_dir}"
+    return 0
+  fi
+
+  log "Creating workspace directory: ${workspace_dir}"
+  run mkdir -p "$workspace_dir"
+}
+
 main() {
   setup_logging
   ensure_brew_shellenv
@@ -291,6 +340,8 @@ main() {
   install_oh_my_zsh
   install_chezmoi_and_apply
   install_agent_browser_runtime
+  install_or_notify_tailscale
+  ensure_workspaces_dir
 
   log "Base setup complete."
 }

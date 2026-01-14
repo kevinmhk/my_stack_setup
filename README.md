@@ -18,6 +18,8 @@ A non-interactive setup script for macOS and Linux that installs Homebrew, core 
 - Installs npm global packages
 - Installs oh-my-zsh
 - Installs chezmoi and applies dotfiles from `https://github.com/kevinmhk/dotfiles`
+- Ensures `~/workspaces` exists
+- Installs Tailscale on Linux; reminds to install on macOS
 - Logs to stdout and to a timestamped file in `logs/`
 
 ## Installed Packages

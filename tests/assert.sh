@@ -23,6 +23,13 @@ command_exists() {
   command -v "$1" >/dev/null 2>&1
 }
 
+is_container() {
+  if [ -f /.dockerenv ] || [ -f /run/.containerenv ]; then
+    return 0
+  fi
+  return 1
+}
+
 ensure_brew() {
   if command_exists brew; then
     BREW_ENV_LOADED=1
@@ -188,6 +195,16 @@ main() {
   assert_command chezmoi || true
   if [ ! -d "$HOME/.oh-my-zsh" ]; then
     record_failure "oh-my-zsh not installed at ${HOME}/.oh-my-zsh"
+  fi
+  if [ ! -d "$HOME/workspaces" ]; then
+    record_failure "Workspace directory missing at ${HOME}/workspaces"
+  fi
+  if [ "$OS_NAME" = "Linux" ]; then
+    if is_container; then
+      log "Container detected: skipping Tailscale assertion."
+    else
+      assert_command tailscale || true
+    fi
   fi
 
   if [ "${#FAILURES[@]}" -gt 0 ]; then
