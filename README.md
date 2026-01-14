@@ -22,6 +22,7 @@ A non-interactive setup script for macOS and Linux that installs Homebrew, core 
 - Installs Tailscale on Linux; reminds to install on macOS
 - Installs vim-plug for Vim plugin management
 - Prints a reminder to run `:PlugInstall` in Vim
+- Prints a reminder to onboard `.env` to `$HOME`
 - Logs to stdout and to a timestamped file in `logs/`
 
 ## Installed Packages

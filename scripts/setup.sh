@@ -337,6 +337,16 @@ remind_vim_plug_install() {
   fi
 }
 
+remind_env_onboarding() {
+  local message="Reminder: Manually onboard your .env file to ${HOME}."
+  log "$message"
+  if [ -t 1 ] && [ -w /dev/tty ]; then
+    printf '\033[31m%s\033[0m\n' "$message" > /dev/tty
+  else
+    printf '\033[31m%s\033[0m\n' "$message"
+  fi
+}
+
 ensure_workspaces_dir() {
   local workspace_dir="${HOME}/workspaces"
   if [ -d "$workspace_dir" ]; then
@@ -370,6 +380,7 @@ main() {
   install_vim_plug
   ensure_workspaces_dir
   remind_vim_plug_install
+  remind_env_onboarding
 
   log "Base setup complete."
 }
