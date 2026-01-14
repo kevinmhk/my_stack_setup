@@ -11,6 +11,7 @@ A non-interactive setup script for macOS and Linux that installs Homebrew, core 
 
 ## What It Does
 
+- Installs Xcode Command Line Tools on macOS
 - Installs Homebrew if missing
 - Installs Homebrew formulae
 - Installs Homebrew casks on macOS only
@@ -34,6 +35,7 @@ Homebrew formulae:
 - fd
 - fzf
 - gh
+- git
 - git-delta
 - glow
 - lazygit

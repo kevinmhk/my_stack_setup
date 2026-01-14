@@ -40,6 +40,22 @@ is_container() {
   return 1
 }
 
+ensure_xcode_cli_tools() {
+  if [ "$OS_NAME" != "Darwin" ]; then
+    return 0
+  fi
+
+  if xcode-select -p >/dev/null 2>&1; then
+    log "Xcode Command Line Tools already installed."
+    return 0
+  fi
+
+  log "Installing Xcode Command Line Tools..."
+  if ! xcode-select --install >/dev/null 2>&1; then
+    log "xcode-select --install returned non-zero; installation may already be in progress."
+  fi
+}
+
 install_homebrew() {
   if command_exists brew; then
     return 0
@@ -80,10 +96,34 @@ ensure_brew_shellenv() {
   fi
 }
 
+formula_command_name() {
+  case "$1" in
+    git-delta) printf '%s\n' "delta" ;;
+    ripgrep) printf '%s\n' "rg" ;;
+    neovim) printf '%s\n' "nvim" ;;
+    sqlite) printf '%s\n' "sqlite3" ;;
+    *) printf '%s\n' "$1" ;;
+  esac
+}
+
+cask_command_name() {
+  case "$1" in
+    1password-cli) printf '%s\n' "op" ;;
+    *) printf '%s\n' "$1" ;;
+  esac
+}
+
 brew_install_if_missing() {
   local pkg="$1"
+  local cmd
+  cmd="$(formula_command_name "$pkg")"
 
   if brew list --versions "$pkg" >/dev/null 2>&1; then
+    return 0
+  fi
+
+  if [ -n "$cmd" ] && command_exists "$cmd"; then
+    log "Skipping ${pkg}: command already available (${cmd})."
     return 0
   fi
 
@@ -93,8 +133,15 @@ brew_install_if_missing() {
 
 brew_cask_install_if_missing() {
   local cask="$1"
+  local cmd
+  cmd="$(cask_command_name "$cask")"
 
   if brew list --cask --versions "$cask" >/dev/null 2>&1; then
+    return 0
+  fi
+
+  if [ -n "$cmd" ] && command_exists "$cmd"; then
+    log "Skipping ${cask}: command already available (${cmd})."
     return 0
   fi
 
@@ -110,6 +157,7 @@ install_brew_formulae() {
     fd
     fzf
     gh
+    git
     git-delta
     glow
     lazygit
@@ -360,6 +408,7 @@ ensure_workspaces_dir() {
 
 main() {
   setup_logging
+  ensure_xcode_cli_tools
   ensure_brew_shellenv
   install_homebrew
 

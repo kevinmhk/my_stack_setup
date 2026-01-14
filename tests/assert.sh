@@ -62,6 +62,23 @@ assert_command() {
   fi
 }
 
+formula_command_name() {
+  case "$1" in
+    git-delta) printf '%s\n' "delta" ;;
+    ripgrep) printf '%s\n' "rg" ;;
+    neovim) printf '%s\n' "nvim" ;;
+    sqlite) printf '%s\n' "sqlite3" ;;
+    *) printf '%s\n' "$1" ;;
+  esac
+}
+
+cask_command_name() {
+  case "$1" in
+    1password-cli) printf '%s\n' "op" ;;
+    *) printf '%s\n' "$1" ;;
+  esac
+}
+
 assert_brew_formula() {
   local pkg="$1"
 
@@ -71,6 +88,23 @@ assert_brew_formula() {
   fi
 }
 
+assert_brew_formula_or_command() {
+  local pkg="$1"
+  local cmd
+  cmd="$(formula_command_name "$pkg")"
+
+  if brew list --versions "$pkg" >/dev/null 2>&1; then
+    return 0
+  fi
+
+  if [ -n "$cmd" ] && command_exists "$cmd"; then
+    return 0
+  fi
+
+  record_failure "Homebrew formula or command missing: ${pkg} (${cmd})"
+  return 1
+}
+
 assert_brew_cask() {
   local cask="$1"
 
@@ -78,6 +112,23 @@ assert_brew_cask() {
     record_failure "Homebrew cask missing: ${cask}"
     return 1
   fi
+}
+
+assert_brew_cask_or_command() {
+  local cask="$1"
+  local cmd
+  cmd="$(cask_command_name "$cask")"
+
+  if brew list --cask --versions "$cask" >/dev/null 2>&1; then
+    return 0
+  fi
+
+  if [ -n "$cmd" ] && command_exists "$cmd"; then
+    return 0
+  fi
+
+  record_failure "Homebrew cask or command missing: ${cask} (${cmd})"
+  return 1
 }
 
 assert_npm_global() {
@@ -139,6 +190,7 @@ main() {
     fd
     fzf
     gh
+    git
     git-delta
     glow
     lazygit
@@ -156,7 +208,7 @@ main() {
 
   local pkg
   for pkg in "${formulae[@]}"; do
-    assert_brew_formula "$pkg" || true
+    assert_brew_formula_or_command "$pkg" || true
   done
 
   if [ "$OS_NAME" = "Darwin" ]; then
@@ -173,7 +225,7 @@ main() {
 
     local cask
     for cask in "${casks[@]}"; do
-      assert_brew_cask "$cask" || true
+      assert_brew_cask_or_command "$cask" || true
     done
   fi
 
