@@ -174,13 +174,22 @@ install_brew_casks() {
 }
 
 install_nvm_and_node() {
-  brew_install_if_missing nvm
-
   export NVM_DIR="$HOME/.nvm"
   mkdir -p "$NVM_DIR"
 
   local nvm_sh
-  nvm_sh="$(brew --prefix nvm)/nvm.sh"
+  nvm_sh="${NVM_DIR}/nvm.sh"
+  if [ ! -s "$nvm_sh" ]; then
+    log "Installing nvm..."
+    if command_exists curl; then
+      run bash -c "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash"
+    elif command_exists wget; then
+      run bash -c "wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash"
+    else
+      abort "Neither curl nor wget is available to install nvm."
+    fi
+  fi
+
   if [ ! -s "$nvm_sh" ]; then
     abort "nvm.sh not found at ${nvm_sh}"
   fi

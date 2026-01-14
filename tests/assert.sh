@@ -88,15 +88,10 @@ ensure_nvm() {
     return 0
   fi
 
-  if ! command_exists brew; then
-    record_failure "Homebrew is required to locate nvm."
-    return 1
-  fi
-
   export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
 
   local nvm_sh
-  nvm_sh="$(brew --prefix nvm)/nvm.sh"
+  nvm_sh="${NVM_DIR}/nvm.sh"
   if [ ! -s "$nvm_sh" ]; then
     record_failure "nvm.sh not found at ${nvm_sh}"
     return 1
