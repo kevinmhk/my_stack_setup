@@ -26,6 +26,7 @@ A non-interactive setup script for macOS and Linux that installs Homebrew, core 
 - Prints a reminder to run `:PlugInstall` in Vim
 - Prints a reminder to run `:MasonInstallAll` in Neovim
 - Prints a reminder to onboard `.env` to `$HOME`
+- Prints a reminder to run `scripts/install-gemini-extensions.sh` after signing in to Gemini CLI
 - Logs to stdout and to a timestamped file in `logs/`
 
 ## Installed Packages
