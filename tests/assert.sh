@@ -251,6 +251,9 @@ main() {
   if [ ! -d "$HOME/workspaces" ]; then
     record_failure "Workspace directory missing at ${HOME}/workspaces"
   fi
+  if [ ! -f "$HOME/.config/chezmoi.toml" ]; then
+    record_failure "Chezmoi config missing at ${HOME}/.config/chezmoi.toml"
+  fi
   if [ ! -f "$HOME/.vim/autoload/plug.vim" ]; then
     record_failure "vim-plug missing at ${HOME}/.vim/autoload/plug.vim"
   fi

@@ -436,6 +436,24 @@ ensure_workspaces_dir() {
   run mkdir -p "$workspace_dir"
 }
 
+ensure_chezmoi_config() {
+  local config_dir="${HOME}/.config"
+  local config_file="${config_dir}/chezmoi.toml"
+
+  if [ -f "$config_file" ]; then
+    log "Chezmoi config already exists: ${config_file}"
+    return 0
+  fi
+
+  log "Creating Chezmoi config: ${config_file}"
+  run mkdir -p "$config_dir"
+  cat <<'EOF' > "$config_file"
+[git]
+    autoCommit = true
+    autoPush = true
+EOF
+}
+
 main() {
   setup_logging
   ensure_xcode_cli_tools
@@ -459,6 +477,7 @@ main() {
   install_vim_plug
   install_nvchad
   ensure_workspaces_dir
+  ensure_chezmoi_config
   remind_vim_plug_install
   remind_mason_install_all
   remind_env_onboarding
