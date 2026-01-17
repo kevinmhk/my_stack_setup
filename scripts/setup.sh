@@ -131,6 +131,7 @@ formula_command_name() {
 cask_command_name() {
   case "$1" in
     1password-cli) printf '%s\n' "op" ;;
+    dbeaver-community) printf '%s\n' "dbeaver" ;;
     *) printf '%s\n' "$1" ;;
   esac
 }
@@ -238,6 +239,7 @@ install_brew_casks() {
   local casks=(
     1password-cli
     codex
+    dbeaver-community
     dockdoor
     droid
     font-hack-nerd-font
@@ -250,6 +252,90 @@ install_brew_casks() {
   for cask in "${casks[@]}"; do
     brew_cask_install_if_missing "$cask"
   done
+}
+
+install_dbeaver_linux() {
+  if [ "$OS_NAME" != "Linux" ]; then
+    return 0
+  fi
+
+  if is_container; then
+    log "Skipping DBeaver install in container environment."
+    return 0
+  fi
+
+  if command_exists dbeaver; then
+    log "DBeaver already installed."
+    return 0
+  fi
+
+  if [ ! -f /etc/os-release ]; then
+    abort "Cannot detect Linux distribution for DBeaver install."
+  fi
+
+  # shellcheck disable=SC1091
+  . /etc/os-release
+
+  local arch
+  local url
+  local tmp_file
+  local os_like
+
+  arch="$(uname -m)"
+  os_like="${ID_LIKE:-${ID:-}}"
+
+  case "$arch" in
+    x86_64|amd64)
+      if printf '%s' "$os_like" | grep -qiE 'debian|ubuntu'; then
+        url="https://dbeaver.io/files/dbeaver-ce_latest_amd64.deb"
+      elif printf '%s' "$os_like" | grep -qiE 'rhel|fedora|centos|rocky|almalinux'; then
+        url="https://dbeaver.io/files/dbeaver-ce-latest-stable.x86_64.rpm"
+      else
+        abort "Unsupported Linux distribution for DBeaver install: ${os_like}"
+      fi
+      ;;
+    aarch64|arm64)
+      if printf '%s' "$os_like" | grep -qiE 'debian|ubuntu'; then
+        url="https://dbeaver.io/files/dbeaver-ce_latest_arm64.deb"
+      elif printf '%s' "$os_like" | grep -qiE 'rhel|fedora|centos|rocky|almalinux'; then
+        url="https://dbeaver.io/files/dbeaver-ce-latest-stable.aarch64.rpm"
+      else
+        abort "Unsupported Linux distribution for DBeaver install: ${os_like}"
+      fi
+      ;;
+    *)
+      abort "Unsupported CPU architecture for DBeaver install: ${arch}"
+      ;;
+  esac
+
+  if ! command_exists curl; then
+    abort "curl is required to install DBeaver on Linux."
+  fi
+
+  tmp_file="$(mktemp)"
+  log "Downloading DBeaver from ${url}..."
+  run curl -fsSL -o "$tmp_file" "$url"
+
+  if printf '%s' "$url" | grep -qE '\.deb$'; then
+    if command_exists sudo; then
+      run sudo -n apt-get update
+      run sudo -n apt-get install -y "$tmp_file"
+    else
+      abort "sudo is required to install the DBeaver .deb package."
+    fi
+  else
+    if command_exists sudo; then
+      if command_exists dnf; then
+        run sudo -n dnf -y install "$tmp_file"
+      elif command_exists yum; then
+        run sudo -n yum -y install "$tmp_file"
+      else
+        abort "Neither dnf nor yum is available to install the DBeaver .rpm package."
+      fi
+    else
+      abort "sudo is required to install the DBeaver .rpm package."
+    fi
+  fi
 }
 
 install_nvm_and_node() {
@@ -471,6 +557,7 @@ main() {
 
   install_brew_formulae
   install_brew_casks
+  install_dbeaver_linux
   install_nvm_and_node
   install_npm_globals
   install_oh_my_zsh

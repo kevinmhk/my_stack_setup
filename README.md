@@ -15,6 +15,7 @@ A non-interactive setup script for macOS and Linux that installs Homebrew, core 
 - Installs Homebrew if missing
 - Installs Homebrew formulae
 - Installs Homebrew casks on macOS only
+- Installs DBeaver on Linux via native package
 - Installs nvm and latest LTS Node.js
 - Installs npm global packages
 - Installs oh-my-zsh
@@ -59,6 +60,7 @@ Homebrew formulae:
 Homebrew casks (macOS only):
 - 1password-cli
 - codex
+- dbeaver-community
 - dockdoor
 - droid
 - font-hack-nerd-font

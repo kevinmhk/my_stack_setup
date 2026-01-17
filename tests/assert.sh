@@ -76,6 +76,7 @@ formula_command_name() {
 cask_command_name() {
   case "$1" in
     1password-cli) printf '%s\n' "op" ;;
+    dbeaver-community) printf '%s\n' "dbeaver" ;;
     *) printf '%s\n' "$1" ;;
   esac
 }
@@ -218,6 +219,7 @@ main() {
     local casks=(
       1password-cli
       codex
+      dbeaver-community
       dockdoor
       droid
       font-hack-nerd-font
