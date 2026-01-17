@@ -46,6 +46,7 @@ Homebrew formulae:
 - git
 - git-delta
 - glow
+- lazysql
 - lazygit
 - neovim
 - opencode

@@ -185,6 +185,7 @@ install_brew_formulae() {
     git
     git-delta
     glow
+    lazysql
     lazygit
     neovim
     opencode

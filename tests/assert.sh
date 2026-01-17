@@ -197,6 +197,7 @@ main() {
     git
     git-delta
     glow
+    lazysql
     lazygit
     neovim
     opencode
