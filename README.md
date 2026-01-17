@@ -36,6 +36,7 @@ Homebrew formulae:
 - age
 - bat
 - chezmoi
+- difftastic
 - fd
 - fzf
 - gh

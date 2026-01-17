@@ -119,6 +119,7 @@ ensure_brew_shellenv() {
 
 formula_command_name() {
   case "$1" in
+    difftastic) printf '%s\n' "difft" ;;
     git-delta) printf '%s\n' "delta" ;;
     ripgrep) printf '%s\n' "rg" ;;
     neovim) printf '%s\n' "nvim" ;;
@@ -175,6 +176,7 @@ install_brew_formulae() {
     age
     bat
     chezmoi
+    difftastic
     fd
     fzf
     gh
