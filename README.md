@@ -39,6 +39,7 @@ Homebrew formulae:
 - fd
 - fzf
 - gh
+- helix
 - git
 - git-delta
 - glow

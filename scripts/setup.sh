@@ -178,6 +178,7 @@ install_brew_formulae() {
     fd
     fzf
     gh
+    helix
     git
     git-delta
     glow
