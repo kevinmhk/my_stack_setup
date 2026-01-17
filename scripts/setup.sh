@@ -498,6 +498,20 @@ install_nvchad() {
   run git clone https://github.com/NvChad/starter "$nvim_dir"
 }
 
+install_harlequin() {
+  if command_exists harlequin; then
+    log "Harlequin already installed."
+    return 0
+  fi
+
+  if ! command_exists uv; then
+    abort "uv is required to install harlequin."
+  fi
+
+  log "Installing Harlequin..."
+  run uv tool install harlequin
+}
+
 remind_vim_plug_install() {
   add_reminder "Reminder: Run :PlugInstall in Vim after opening it."
 }
@@ -566,6 +580,7 @@ main() {
   install_or_notify_tailscale
   install_vim_plug
   install_nvchad
+  install_harlequin
   ensure_workspaces_dir
   ensure_chezmoi_config
   remind_vim_plug_install

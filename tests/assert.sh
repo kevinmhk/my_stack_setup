@@ -265,6 +265,9 @@ main() {
   if [ ! -d "$HOME/.config/nvim" ]; then
     record_failure "NvChad missing at ${HOME}/.config/nvim"
   fi
+  if ! command_exists harlequin; then
+    record_failure "Harlequin command not found"
+  fi
   if [ "$OS_NAME" = "Linux" ]; then
     if is_container; then
       log "Container detected: skipping Tailscale assertion."
