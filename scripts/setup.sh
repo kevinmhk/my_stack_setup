@@ -529,6 +529,10 @@ remind_gemini_extensions_install() {
   add_reminder "Reminder: After signing in to gemini-cli, run scripts/install-gemini-extensions.sh."
 }
 
+remind_flutter_install() {
+  add_reminder "Reminder: Install Flutter manually."
+}
+
 ensure_workspaces_dir() {
   local workspace_dir="${HOME}/workspaces"
   if [ -d "$workspace_dir" ]; then
@@ -584,6 +588,7 @@ main() {
   install_harlequin
   ensure_workspaces_dir
   ensure_chezmoi_config
+  remind_flutter_install
   remind_vim_plug_install
   remind_mason_install_all
   remind_env_onboarding

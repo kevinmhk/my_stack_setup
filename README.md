@@ -27,6 +27,7 @@ A non-interactive setup script for macOS and Linux that installs Homebrew, core 
 - Installs NvChad starter config for Neovim
 - Installs Harlequin via uv
 - Prints a reminder to run `:PlugInstall` in Vim
+- Prints a reminder to install Flutter manually
 - Prints a reminder to run `:MasonInstallAll` in Neovim
 - Prints a reminder to onboard `.env` to `$HOME`
 - Prints a reminder to run `scripts/install-gemini-extensions.sh` after signing in to Gemini CLI
