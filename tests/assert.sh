@@ -238,6 +238,7 @@ main() {
   local npm_packages=(
     @google/gemini-cli
     agent-browser
+    @mermaid-js/mermaid-cli
     bun
     firebase-tools
   )
