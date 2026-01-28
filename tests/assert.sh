@@ -239,6 +239,7 @@ main() {
     @google/gemini-cli
     agent-browser
     @playwright/mcp@latest
+    @mariozechner/pi-coding-agent
     @mermaid-js/mermaid-cli
     bun
     firebase-tools
