@@ -396,7 +396,7 @@ install_npm_globals() {
   local npm_packages=(
     @google/gemini-cli
     agent-browser
-    @playwright/mcp@latest
+    @playwright/cli@latest
     @mariozechner/pi-coding-agent
     @mermaid-js/mermaid-cli
     bun

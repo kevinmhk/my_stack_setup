@@ -74,7 +74,7 @@ Homebrew casks (macOS only):
 npm globals:
 - @google/gemini-cli
 - agent-browser
-- @playwright/mcp@latest
+- @playwright/cli@latest
 - @mariozechner/pi-coding-agent
 - @mermaid-js/mermaid-cli
 - bun

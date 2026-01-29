@@ -238,7 +238,7 @@ main() {
   local npm_packages=(
     @google/gemini-cli
     agent-browser
-    @playwright/mcp@latest
+    @playwright/cli
     @mariozechner/pi-coding-agent
     @mermaid-js/mermaid-cli
     bun
@@ -269,8 +269,8 @@ main() {
   if [ ! -d "$HOME/.config/nvim" ]; then
     record_failure "NvChad missing at ${HOME}/.config/nvim"
   fi
-  if ! command_exists harlequin; then
-    record_failure "Harlequin command not found"
+  if [ ! -x "$HOME/.local/bin/harlequin" ]; then
+    record_failure "Harlequin binary missing at ${HOME}/.local/bin/harlequin"
   fi
   if [ "$OS_NAME" = "Linux" ]; then
     if is_container; then
