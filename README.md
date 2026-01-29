@@ -59,6 +59,7 @@ Homebrew formulae:
 - yazi
 - zellij
 - zsh
+- steipete/tap/codexbar (Linux only)
 
 Homebrew casks (macOS only):
 - 1password-cli
@@ -69,6 +70,7 @@ Homebrew casks (macOS only):
 - font-hack-nerd-font
 - font-0xproto-nerd-font
 - ghostty
+- steipete/tap/codexbar
 - warp
 
 npm globals:

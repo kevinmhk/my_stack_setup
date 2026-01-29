@@ -64,6 +64,7 @@ assert_command() {
 
 formula_command_name() {
   case "$1" in
+    steipete/tap/codexbar) printf '%s\n' "codexbar" ;;
     difftastic) printf '%s\n' "difft" ;;
     git-delta) printf '%s\n' "delta" ;;
     ripgrep) printf '%s\n' "rg" ;;
@@ -77,6 +78,7 @@ cask_command_name() {
   case "$1" in
     1password-cli) printf '%s\n' "op" ;;
     dbeaver-community) printf '%s\n' "dbeaver" ;;
+    steipete/tap/codexbar) printf '%s\n' "codexbar" ;;
     *) printf '%s\n' "$1" ;;
   esac
 }
@@ -211,6 +213,10 @@ main() {
     zsh
   )
 
+  if [ "$OS_NAME" != "Darwin" ]; then
+    formulae+=(steipete/tap/codexbar)
+  fi
+
   local pkg
   for pkg in "${formulae[@]}"; do
     assert_brew_formula_or_command "$pkg" || true
@@ -226,6 +232,7 @@ main() {
       font-hack-nerd-font
       font-0xproto-nerd-font
       ghostty
+      steipete/tap/codexbar
       warp
     )
 

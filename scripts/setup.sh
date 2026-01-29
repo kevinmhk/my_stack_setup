@@ -119,6 +119,7 @@ ensure_brew_shellenv() {
 
 formula_command_name() {
   case "$1" in
+    steipete/tap/codexbar) printf '%s\n' "codexbar" ;;
     difftastic) printf '%s\n' "difft" ;;
     git-delta) printf '%s\n' "delta" ;;
     ripgrep) printf '%s\n' "rg" ;;
@@ -132,6 +133,7 @@ cask_command_name() {
   case "$1" in
     1password-cli) printf '%s\n' "op" ;;
     dbeaver-community) printf '%s\n' "dbeaver" ;;
+    steipete/tap/codexbar) printf '%s\n' "codexbar" ;;
     *) printf '%s\n' "$1" ;;
   esac
 }
@@ -199,6 +201,10 @@ install_brew_formulae() {
     zsh
   )
 
+  if [ "$OS_NAME" != "Darwin" ]; then
+    formulae+=(steipete/tap/codexbar)
+  fi
+
   local pkg
   for pkg in "${formulae[@]}"; do
     brew_install_if_missing "$pkg"
@@ -246,6 +252,7 @@ install_brew_casks() {
     font-hack-nerd-font
     font-0xproto-nerd-font
     ghostty
+    steipete/tap/codexbar
     warp
   )
 
