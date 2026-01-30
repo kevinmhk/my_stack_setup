@@ -180,6 +180,7 @@ install_brew_formulae() {
     bat
     chezmoi
     difftastic
+    duckdb
     fd
     fzf
     gh

@@ -40,6 +40,7 @@ Homebrew formulae:
 - bat
 - chezmoi
 - difftastic
+- duckdb
 - fd
 - fzf
 - gh

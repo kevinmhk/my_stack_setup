@@ -192,6 +192,7 @@ main() {
     bat
     chezmoi
     difftastic
+    duckdb
     fd
     fzf
     gh
