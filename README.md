@@ -91,6 +91,10 @@ Run the script from the repository root:
 scripts/setup.sh
 ```
 
+## Contributor Guide
+
+See `AGENTS.md` for repository conventions, scripts, and testing workflow.
+
 ## Logging
 
 - Default log directory: `logs/`
