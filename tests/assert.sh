@@ -199,6 +199,7 @@ main() {
     git
     git-delta
     glow
+    jq
     lazysql
     lazygit
     micro

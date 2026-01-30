@@ -187,6 +187,7 @@ install_brew_formulae() {
     git
     git-delta
     glow
+    jq
     lazysql
     lazygit
     micro
