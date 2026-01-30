@@ -201,6 +201,7 @@ main() {
     glow
     lazysql
     lazygit
+    micro
     neovim
     opencode
     qwen-code

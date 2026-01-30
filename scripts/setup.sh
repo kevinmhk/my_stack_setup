@@ -189,6 +189,7 @@ install_brew_formulae() {
     glow
     lazysql
     lazygit
+    micro
     neovim
     opencode
     qwen-code
