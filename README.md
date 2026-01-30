@@ -25,7 +25,7 @@ A non-interactive setup script for macOS and Linux that installs Homebrew, core 
 - Installs Tailscale on Linux; reminds to install on macOS
 - Installs vim-plug for Vim plugin management
 - Installs NvChad starter config for Neovim
-- Installs Harlequin via uv
+- Installs Harlequin, ruff, and ty via uv
 - Prints a reminder to run `:PlugInstall` in Vim
 - Prints a reminder to install Flutter manually
 - Prints a reminder to run `:MasonInstallAll` in Neovim
@@ -83,6 +83,11 @@ npm globals:
 - bun
 - firebase-tools
 - @openai/codex (Linux only)
+
+uv tools:
+- harlequin
+- ruff@latest
+- ty@latest
 
 ## Usage
 

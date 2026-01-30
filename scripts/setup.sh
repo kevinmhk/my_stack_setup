@@ -511,17 +511,27 @@ install_nvchad() {
 }
 
 install_harlequin() {
-  if command_exists harlequin; then
-    log "Harlequin already installed."
-    return 0
-  fi
+  local uv_tools=(
+    harlequin
+    ruff@latest
+    ty@latest
+  )
 
   if ! command_exists uv; then
-    abort "uv is required to install harlequin."
+    abort "uv is required to install uv tools."
   fi
 
-  log "Installing Harlequin..."
-  run uv tool install harlequin
+  local tool
+  for tool in "${uv_tools[@]}"; do
+    local cmd="${tool%%@*}"
+    if command_exists "$cmd"; then
+      log "${cmd} already installed."
+      continue
+    fi
+
+    log "Installing ${tool} via uv..."
+    run uv tool install "$tool"
+  done
 }
 
 remind_vim_plug_install() {

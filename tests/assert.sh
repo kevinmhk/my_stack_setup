@@ -280,6 +280,12 @@ main() {
   if [ ! -x "$HOME/.local/bin/harlequin" ]; then
     record_failure "Harlequin binary missing at ${HOME}/.local/bin/harlequin"
   fi
+  if [ ! -x "$HOME/.local/bin/ruff" ]; then
+    record_failure "ruff binary missing at ${HOME}/.local/bin/ruff"
+  fi
+  if [ ! -x "$HOME/.local/bin/ty" ]; then
+    record_failure "ty binary missing at ${HOME}/.local/bin/ty"
+  fi
   if [ "$OS_NAME" = "Linux" ]; then
     if is_container; then
       log "Container detected: skipping Tailscale assertion."
