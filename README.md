@@ -55,6 +55,7 @@ Homebrew formulae:
 - neovim
 - opencode
 - qwen-code
+- pytest
 - ripgrep
 - sqlite
 - tmux

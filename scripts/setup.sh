@@ -195,6 +195,7 @@ install_brew_formulae() {
     neovim
     opencode
     qwen-code
+    pytest
     ripgrep
     sqlite
     tmux

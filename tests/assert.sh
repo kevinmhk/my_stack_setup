@@ -207,6 +207,7 @@ main() {
     neovim
     opencode
     qwen-code
+    pytest
     ripgrep
     sqlite
     tmux
