@@ -191,6 +191,7 @@ main() {
     age
     bat
     chezmoi
+    csvkit
     difftastic
     duckdb
     fd
@@ -207,11 +208,13 @@ main() {
     neovim
     opencode
     qwen-code
+    qsv
     pytest
     ripgrep
     sqlite
     tmux
     uv
+    xan
     yazi
     zellij
     zsh
@@ -290,6 +293,7 @@ main() {
     record_failure "ty binary missing at ${HOME}/.local/bin/ty"
   fi
   if [ "$OS_NAME" = "Linux" ]; then
+    assert_command espeak-ng || true
     if is_container; then
       log "Container detected: skipping Tailscale assertion."
     else

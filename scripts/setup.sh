@@ -179,6 +179,7 @@ install_brew_formulae() {
     age
     bat
     chezmoi
+    csvkit
     difftastic
     duckdb
     fd
@@ -195,11 +196,13 @@ install_brew_formulae() {
     neovim
     opencode
     qwen-code
+    qsv
     pytest
     ripgrep
     sqlite
     tmux
     uv
+    xan
     yazi
     zellij
     zsh
@@ -348,6 +351,36 @@ install_dbeaver_linux() {
       abort "sudo is required to install the DBeaver .rpm package."
     fi
   fi
+}
+
+install_espeak_ng() {
+  if [ "$OS_NAME" != "Linux" ]; then
+    return 0
+  fi
+
+  if command_exists espeak-ng; then
+    log "espeak-ng already installed."
+    return 0
+  fi
+
+  if ! command_exists sudo; then
+    abort "sudo is required to install espeak-ng."
+  fi
+
+  if command_exists apt-get; then
+    log "Installing espeak-ng via apt-get..."
+    run sudo -n apt-get update
+    run sudo -n apt-get install -y espeak-ng
+    return 0
+  fi
+
+  if command_exists yum; then
+    log "Installing espeak-ng via yum..."
+    run sudo -n yum -y install espeak-ng
+    return 0
+  fi
+
+  abort "Neither apt-get nor yum is available to install espeak-ng."
 }
 
 install_nvm_and_node() {
@@ -601,6 +634,7 @@ main() {
   install_brew_formulae
   install_brew_casks
   install_dbeaver_linux
+  install_espeak_ng
   install_nvm_and_node
   install_npm_globals
   install_oh_my_zsh

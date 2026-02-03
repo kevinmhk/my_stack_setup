@@ -16,6 +16,7 @@ A non-interactive setup script for macOS and Linux that installs Homebrew, core 
 - Installs Homebrew formulae
 - Installs Homebrew casks on macOS only
 - Installs DBeaver on Linux via native package
+- Installs espeak-ng on Linux via apt-get or yum
 - Installs nvm and latest LTS Node.js
 - Installs npm global packages
 - Installs oh-my-zsh
@@ -39,6 +40,7 @@ Homebrew formulae:
 - age
 - bat
 - chezmoi
+- csvkit
 - difftastic
 - duckdb
 - fd
@@ -55,11 +57,13 @@ Homebrew formulae:
 - neovim
 - opencode
 - qwen-code
+- qsv
 - pytest
 - ripgrep
 - sqlite
 - tmux
 - uv
+- xan
 - yazi
 - zellij
 - zsh
@@ -91,6 +95,9 @@ uv tools:
 - harlequin
 - ruff@latest
 - ty@latest
+
+Linux system packages:
+- espeak-ng
 
 ## Usage
 
