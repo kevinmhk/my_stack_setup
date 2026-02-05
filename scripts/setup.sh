@@ -194,6 +194,7 @@ install_brew_formulae() {
     lazygit
     micro
     neovim
+    nmap
     opencode
     qwen-code
     qsv
