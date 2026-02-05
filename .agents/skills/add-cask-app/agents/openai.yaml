@@ -1,0 +1,4 @@
+interface:
+  display_name: "Add Cask App"
+  short_description: "Add a macOS cask install and docs entry"
+  default_prompt: "Use $add-cask-app to add a Homebrew cask app to setup and README."

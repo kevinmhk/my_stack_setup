@@ -111,6 +111,14 @@ scripts/setup.sh
 
 See `AGENTS.md` for repository conventions, scripts, and testing workflow.
 
+## Local Skills
+
+Repo-level Codex skills live under `.agents/skills/`:
+- `.agents/skills/add-cli-package`: add CLI tools with setup, tests, and README updates
+- `.agents/skills/add-package-manager`: add package managers with guards and reminders
+- `.agents/skills/add-reminder`: add or regroup setup reminder messages and docs
+- `.agents/skills/add-cask-app`: add macOS Homebrew casks and docs updates
+
 ## Logging
 
 - Default log directory: `logs/`

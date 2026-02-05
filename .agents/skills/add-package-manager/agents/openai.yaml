@@ -1,0 +1,4 @@
+interface:
+  display_name: "Add Package Manager"
+  short_description: "Add a package manager install with guards"
+  default_prompt: "Use $add-package-manager to add a new package manager to setup and docs."

@@ -5,11 +5,18 @@
 - `tests/` contains validation tooling. `assert.sh` is the primary post-setup check; Dockerfiles live in `tests/docker/ubuntu` and `tests/docker/centos`.
 - `logs/` is generated at runtime for setup and test runs.
 - `README.md` documents usage and installed packages.
+- `.agents/skills/` contains repo-level Codex skills for routine changes (adding tools, package managers, reminders, and casks).
 
 ## Build, Test, and Development Commands
 - `scripts/setup.sh`: non-interactive bootstrap for macOS/Linux (Homebrew, npm globals, chezmoi, tooling). Writes a timestamped log in `logs/`.
 - `tests/assert.sh`: verifies expected tools, directories, and configs. Fails with a summary log in `logs/`.
 - `scripts/test-containers.sh ubuntu|centos|--all`: builds and runs container tests; outputs per-container logs in `logs/`. Requires Docker Desktop running.
+
+## Local Skills
+- `.agents/skills/add-cli-package`: add CLI tools with setup, tests, and README updates
+- `.agents/skills/add-package-manager`: add package managers with guards and reminders
+- `.agents/skills/add-reminder`: add or regroup setup reminder messages and docs
+- `.agents/skills/add-cask-app`: add macOS Homebrew casks and docs updates
 
 ## Coding Style & Naming Conventions
 - Shell scripts use `bash` with `set -euo pipefail` and `log`/`run` helpers for traceability.

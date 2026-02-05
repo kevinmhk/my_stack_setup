@@ -1,0 +1,4 @@
+interface:
+  display_name: "Add CLI Package"
+  short_description: "Add CLI tool installs with tests/docs updates"
+  default_prompt: "Use $add-cli-package to add a new CLI tool to setup, tests, and README."
