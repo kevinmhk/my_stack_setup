@@ -79,6 +79,7 @@ Homebrew casks (macOS only):
 - font-hack-nerd-font
 - font-0xproto-nerd-font
 - ghostty
+- jordanbaird-ice
 - steipete/tap/codexbar
 - warp
 
