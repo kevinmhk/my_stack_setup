@@ -22,7 +22,7 @@ A non-interactive setup script for macOS and Linux that installs Homebrew, core 
 - Installs oh-my-zsh
 - Installs chezmoi and applies dotfiles from `https://github.com/kevinmhk/dotfiles`
 - Ensures `~/workspaces` exists
-- Creates `~/.config/chezmoi.toml` with auto-commit and auto-push enabled
+- Creates `~/.config/chezmoi.toml` with auto-commit/auto-push and `delta` as diff pager
 - Installs Tailscale on Linux; reminds to install on macOS
 - Installs vim-plug for Vim plugin management
 - Installs NvChad starter config for Neovim

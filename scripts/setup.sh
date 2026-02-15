@@ -618,6 +618,9 @@ ensure_chezmoi_config() {
 [git]
     autoCommit = true
     autoPush = true
+
+[diff]
+    pager = "delta"
 EOF
 }
 
