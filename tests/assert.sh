@@ -190,6 +190,10 @@ main() {
   local formulae=(
     age
     bat
+    bats-assert
+    bats-core
+    bats-file
+    bats-support
     chezmoi
     csvkit
     difftastic
@@ -212,6 +216,9 @@ main() {
     qsv
     pytest
     ripgrep
+    shellcheck
+    shellspec
+    shfmt
     sqlite
     tmux
     uv

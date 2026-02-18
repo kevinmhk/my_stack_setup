@@ -178,6 +178,10 @@ install_brew_formulae() {
   local formulae=(
     age
     bat
+    bats-assert
+    bats-core
+    bats-file
+    bats-support
     chezmoi
     csvkit
     difftastic
@@ -200,6 +204,9 @@ install_brew_formulae() {
     qsv
     pytest
     ripgrep
+    shellcheck
+    shellspec
+    shfmt
     sqlite
     tmux
     uv

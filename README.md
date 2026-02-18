@@ -39,6 +39,10 @@ A non-interactive setup script for macOS and Linux that installs Homebrew, core 
 Homebrew formulae:
 - age
 - bat
+- bats-assert
+- bats-core
+- bats-file
+- bats-support
 - chezmoi
 - csvkit
 - difftastic
@@ -61,6 +65,9 @@ Homebrew formulae:
 - qsv
 - pytest
 - ripgrep
+- shellcheck
+- shellspec
+- shfmt
 - sqlite
 - tmux
 - uv
