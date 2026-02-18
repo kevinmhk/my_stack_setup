@@ -197,6 +197,7 @@ install_brew_formulae() {
     lazysql
     lazygit
     micro
+    mole
     neovim
     nmap
     opencode

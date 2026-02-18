@@ -209,6 +209,7 @@ main() {
     lazysql
     lazygit
     micro
+    mole
     neovim
     nmap
     opencode

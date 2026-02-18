@@ -58,6 +58,7 @@ Homebrew formulae:
 - lazysql
 - lazygit
 - micro
+- mole
 - neovim
 - nmap
 - opencode
