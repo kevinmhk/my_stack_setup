@@ -456,6 +456,7 @@ install_npm_globals() {
     @mermaid-js/mermaid-cli
     bun
     firebase-tools
+    openclaw
   )
 
   if [ "$OS_NAME" != "Darwin" ]; then

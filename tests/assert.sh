@@ -209,7 +209,6 @@ main() {
     lazysql
     lazygit
     micro
-    mole
     neovim
     nmap
     opencode
@@ -229,7 +228,9 @@ main() {
     zsh
   )
 
-  if [ "$OS_NAME" != "Darwin" ]; then
+  if [ "$OS_NAME" = "Darwin" ]; then
+    formulae+=(mole)
+  else
     formulae+=(steipete/tap/codexbar)
   fi
 
@@ -267,6 +268,7 @@ main() {
     @mermaid-js/mermaid-cli
     bun
     firebase-tools
+    openclaw
   )
 
   if [ "$OS_NAME" != "Darwin" ]; then
@@ -284,8 +286,8 @@ main() {
   if [ ! -d "$HOME/workspaces" ]; then
     record_failure "Workspace directory missing at ${HOME}/workspaces"
   fi
-  if [ ! -f "$HOME/.config/chezmoi.toml" ]; then
-    record_failure "Chezmoi config missing at ${HOME}/.config/chezmoi.toml"
+  if [ ! -f "$HOME/.config/chezmoi/chezmoi.toml" ]; then
+    record_failure "Chezmoi config missing at ${HOME}/.config/chezmoi/chezmoi.toml"
   fi
   if [ ! -f "$HOME/.vim/autoload/plug.vim" ]; then
     record_failure "vim-plug missing at ${HOME}/.vim/autoload/plug.vim"

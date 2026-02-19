@@ -99,6 +99,7 @@ npm globals:
 - @mermaid-js/mermaid-cli
 - bun
 - firebase-tools
+- openclaw
 - @openai/codex (Linux only)
 
 uv tools:
