@@ -613,7 +613,7 @@ ensure_workspaces_dir() {
 }
 
 ensure_chezmoi_config() {
-  local config_dir="${HOME}/.config"
+  local config_dir="${HOME}/.config/chezmoi"
   local config_file="${config_dir}/chezmoi.toml"
 
   if [ -f "$config_file" ]; then
