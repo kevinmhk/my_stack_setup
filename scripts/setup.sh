@@ -642,6 +642,7 @@ main() {
     abort "Homebrew is required but not available."
   fi
 
+  run brew tap bats-core/bats-core
   run brew update
 
   install_brew_formulae
