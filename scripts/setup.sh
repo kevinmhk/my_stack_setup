@@ -197,7 +197,6 @@ install_brew_formulae() {
     lazysql
     lazygit
     micro
-    mole
     neovim
     nmap
     opencode
@@ -217,7 +216,9 @@ install_brew_formulae() {
     zsh
   )
 
-  if [ "$OS_NAME" != "Darwin" ]; then
+  if [ "$OS_NAME" = "Darwin" ]; then
+    formulae+=(mole)
+  else
     formulae+=(steipete/tap/codexbar)
   fi
 
