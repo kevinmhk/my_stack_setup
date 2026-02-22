@@ -55,6 +55,7 @@ Homebrew formulae:
 - git-delta
 - glow
 - jq
+- llama.cpp
 - lazysql
 - lazygit
 - micro
@@ -80,6 +81,7 @@ Homebrew formulae:
 
 Homebrew casks (macOS only):
 - 1password-cli
+- claude-code
 - codex
 - dbeaver-community
 - dockdoor

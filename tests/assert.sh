@@ -206,6 +206,7 @@ main() {
     git-delta
     glow
     jq
+    llama.cpp
     lazysql
     lazygit
     micro
@@ -242,6 +243,7 @@ main() {
   if [ "$OS_NAME" = "Darwin" ]; then
     local casks=(
       1password-cli
+      claude-code
       codex
       dbeaver-community
       dockdoor

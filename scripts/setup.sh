@@ -196,6 +196,7 @@ install_brew_formulae() {
     jq
     lazysql
     lazygit
+    llama.cpp
     micro
     neovim
     nmap
@@ -262,6 +263,7 @@ install_brew_casks() {
 
   local casks=(
     1password-cli
+    claude-code
     codex
     dbeaver-community
     dockdoor
