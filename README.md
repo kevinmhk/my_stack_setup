@@ -1,6 +1,6 @@
 # My Stack Setup
 
-A non-interactive setup script for macOS and Linux that installs Homebrew, core CLI tools, Node (via nvm), global npm packages, and applies dotfiles with chezmoi.
+An installer script for macOS and Linux that installs Homebrew, core CLI tools, Node (via nvm), global npm packages, and applies dotfiles with chezmoi.
 
 ## Requirements
 
@@ -120,6 +120,13 @@ Run the script from the repository root:
 scripts/setup.sh
 ```
 
+Non-interactive mode requires an explicit chezmoi decision:
+
+```bash
+scripts/setup.sh --non-interactive --chezmoi-apply=y
+scripts/setup.sh --non-interactive --chezmoi-apply=n
+```
+
 ## Contributor Guide
 
 See `AGENTS.md` for repository conventions, scripts, and testing workflow.
@@ -148,6 +155,12 @@ Assertions:
 tests/assert.sh
 ```
 
+Setup CLI smoke tests:
+
+```bash
+bats tests/setup-args-smoke.bats
+```
+
 Container tests (Ubuntu + CentOS):
 
 ```bash
@@ -161,5 +174,6 @@ Before running container tests, start Docker Desktop.
 
 ## Notes
 
-- The script is non-interactive and is designed to be re-run safely.
+- The script prompts for chezmoi apply/init decisions in default interactive mode.
+- Use `--non-interactive` only with `--chezmoi-apply=y|n`.
 - On Linux, Homebrew is installed under `/home/linuxbrew/.linuxbrew` by default.

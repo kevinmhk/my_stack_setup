@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Non-interactive by default
-export NONINTERACTIVE=1
+# Interactive by default
+NONINTERACTIVE=0
+CHEZMOI_APPLY_CHOICE=""
 
 DOTFILES_REPO_URL="https://github.com/kevinmhk/dotfiles.git"
 OS_NAME="$(uname -s)"
@@ -31,6 +32,101 @@ abort() {
 
 command_exists() {
   command -v "$1" >/dev/null 2>&1
+}
+
+print_usage() {
+  cat <<'EOF'
+Usage: scripts/setup.sh [--non-interactive --chezmoi-apply=y|n] [--help]
+
+Options:
+  --non-interactive       Run without prompts.
+  --chezmoi-apply=y|n     Required with --non-interactive; controls chezmoi apply/init --apply.
+  --help, -h              Show this help message.
+EOF
+}
+
+parse_args() {
+  while [ "$#" -gt 0 ]; do
+    case "$1" in
+      --non-interactive)
+        NONINTERACTIVE=1
+        ;;
+      --chezmoi-apply=*)
+        CHEZMOI_APPLY_CHOICE="${1#*=}"
+        ;;
+      --chezmoi-apply)
+        shift || abort "Missing value for --chezmoi-apply. Use y or n."
+        CHEZMOI_APPLY_CHOICE="$1"
+        ;;
+      --help|-h)
+        print_usage
+        exit 0
+        ;;
+      *)
+        abort "Unknown option: $1. Use --help for usage."
+        ;;
+    esac
+    shift
+  done
+
+  case "$CHEZMOI_APPLY_CHOICE" in
+    ""|y|Y|n|N) ;;
+    *)
+      abort "Invalid value for --chezmoi-apply: ${CHEZMOI_APPLY_CHOICE}. Use y or n."
+      ;;
+  esac
+
+  if [ "$NONINTERACTIVE" -eq 1 ] && [ -z "$CHEZMOI_APPLY_CHOICE" ]; then
+    abort "--chezmoi-apply=y|n is required when --non-interactive is set."
+  fi
+
+  if [ "$NONINTERACTIVE" -eq 0 ] && [ -n "$CHEZMOI_APPLY_CHOICE" ]; then
+    abort "--chezmoi-apply is only valid with --non-interactive."
+  fi
+
+  export NONINTERACTIVE
+}
+
+confirm() {
+  local prompt="$1"
+  local default="${2:-n}"
+  local reply
+
+  if [ -t 0 ]; then
+    printf '%s [y/N]: ' "$prompt"
+    read -r reply
+  else
+    reply="$default"
+  fi
+
+  case "$reply" in
+    [Yy]*)
+      return 0
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
+should_apply_chezmoi() {
+  local prompt="$1"
+
+  if [ "$NONINTERACTIVE" -eq 1 ]; then
+    case "$CHEZMOI_APPLY_CHOICE" in
+      y|Y) return 0 ;;
+      n|N) return 1 ;;
+      *)
+        abort "Invalid non-interactive chezmoi choice. Use --chezmoi-apply=y|n."
+        ;;
+    esac
+  fi
+
+  if ! [ -t 0 ]; then
+    abort "Interactive mode requires a TTY for chezmoi prompt. Use --non-interactive --chezmoi-apply=y|n."
+  fi
+
+  confirm "$prompt"
 }
 
 is_container() {
@@ -480,13 +576,20 @@ install_chezmoi_and_apply() {
   brew_install_if_missing chezmoi
 
   if [ -d "$HOME/.local/share/chezmoi" ]; then
-    log "Chezmoi already initialized; applying latest state..."
-    run chezmoi apply
+    log "Chezmoi already initialized."
+    if should_apply_chezmoi "Apply chezmoi dotfiles now?"; then
+      run chezmoi apply
+    else
+      log "Skipping chezmoi apply. Run 'chezmoi apply' manually later."
+    fi
     return 0
   fi
 
-  log "Initializing chezmoi from ${DOTFILES_REPO_URL}..."
-  run chezmoi init --apply "$DOTFILES_REPO_URL"
+  if should_apply_chezmoi "Initialize and apply chezmoi from ${DOTFILES_REPO_URL}?"; then
+    run chezmoi init --apply "$DOTFILES_REPO_URL"
+  else
+    log "Skipping chezmoi init. Run 'chezmoi init --apply <repo>' manually later."
+  fi
 }
 
 install_agent_browser_runtime() {
@@ -637,6 +740,7 @@ EOF
 }
 
 main() {
+  parse_args "$@"
   setup_logging
   ensure_xcode_cli_tools
   ensure_brew_shellenv
