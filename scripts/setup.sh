@@ -656,7 +656,6 @@ main() {
   install_nvm_and_node
   install_npm_globals
   install_oh_my_zsh
-  install_chezmoi_and_apply
   install_agent_browser_runtime
   install_or_notify_tailscale
   install_vim_plug
@@ -664,6 +663,7 @@ main() {
   install_harlequin
   ensure_workspaces_dir
   ensure_chezmoi_config
+  install_chezmoi_and_apply
   remind_flutter_install
   remind_vim_plug_install
   remind_mason_install_all
