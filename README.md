@@ -61,6 +61,7 @@ Homebrew formulae:
 - micro
 - mole
 - neovim
+- ngrok
 - nmap
 - opencode
 - qwen-code

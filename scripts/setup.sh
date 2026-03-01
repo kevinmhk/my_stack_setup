@@ -295,6 +295,7 @@ install_brew_formulae() {
     llama.cpp
     micro
     neovim
+    ngrok
     nmap
     opencode
     qwen-code

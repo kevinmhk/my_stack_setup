@@ -211,6 +211,7 @@ main() {
     lazygit
     micro
     neovim
+    ngrok
     nmap
     opencode
     qwen-code
