@@ -4,6 +4,7 @@ set -euo pipefail
 # Interactive by default
 NONINTERACTIVE=0
 CHEZMOI_APPLY_CHOICE=""
+OPENCLAW_INSTALL_CHOICE=""
 
 DOTFILES_REPO_URL="https://github.com/kevinmhk/dotfiles.git"
 OS_NAME="$(uname -s)"
@@ -36,11 +37,12 @@ command_exists() {
 
 print_usage() {
   cat <<'EOF'
-Usage: scripts/setup.sh [--non-interactive --chezmoi-apply=y|n] [--help]
+Usage: scripts/setup.sh [--non-interactive --chezmoi-apply=y|n --openclaw-install=y|n] [--help]
 
 Options:
   --non-interactive       Run without prompts.
   --chezmoi-apply=y|n     Required with --non-interactive; controls chezmoi apply/init --apply.
+  --openclaw-install=y|n  Required with --non-interactive; controls optional openclaw npm install.
   --help, -h              Show this help message.
 EOF
 }
@@ -57,6 +59,13 @@ parse_args() {
       --chezmoi-apply)
         shift || abort "Missing value for --chezmoi-apply. Use y or n."
         CHEZMOI_APPLY_CHOICE="$1"
+        ;;
+      --openclaw-install=*)
+        OPENCLAW_INSTALL_CHOICE="${1#*=}"
+        ;;
+      --openclaw-install)
+        shift || abort "Missing value for --openclaw-install. Use y or n."
+        OPENCLAW_INSTALL_CHOICE="$1"
         ;;
       --help|-h)
         print_usage
@@ -76,12 +85,29 @@ parse_args() {
       ;;
   esac
 
-  if [ "$NONINTERACTIVE" -eq 1 ] && [ -z "$CHEZMOI_APPLY_CHOICE" ]; then
-    abort "--chezmoi-apply=y|n is required when --non-interactive is set."
+  case "$OPENCLAW_INSTALL_CHOICE" in
+    ""|y|Y|n|N) ;;
+    *)
+      abort "Invalid value for --openclaw-install: ${OPENCLAW_INSTALL_CHOICE}. Use y or n."
+      ;;
+  esac
+
+  if [ "$NONINTERACTIVE" -eq 1 ]; then
+    if [ -z "$CHEZMOI_APPLY_CHOICE" ]; then
+      abort "--chezmoi-apply=y|n is required when --non-interactive is set."
+    fi
+
+    if [ -z "$OPENCLAW_INSTALL_CHOICE" ]; then
+      abort "--openclaw-install=y|n is required when --non-interactive is set."
+    fi
   fi
 
   if [ "$NONINTERACTIVE" -eq 0 ] && [ -n "$CHEZMOI_APPLY_CHOICE" ]; then
     abort "--chezmoi-apply is only valid with --non-interactive."
+  fi
+
+  if [ "$NONINTERACTIVE" -eq 0 ] && [ -n "$OPENCLAW_INSTALL_CHOICE" ]; then
+    abort "--openclaw-install is only valid with --non-interactive."
   fi
 
   export NONINTERACTIVE
@@ -124,6 +150,26 @@ should_apply_chezmoi() {
 
   if ! [ -t 0 ]; then
     abort "Interactive mode requires a TTY for chezmoi prompt. Use --non-interactive --chezmoi-apply=y|n."
+  fi
+
+  confirm "$prompt"
+}
+
+should_install_openclaw() {
+  local prompt="$1"
+
+  if [ "$NONINTERACTIVE" -eq 1 ]; then
+    case "$OPENCLAW_INSTALL_CHOICE" in
+      y|Y) return 0 ;;
+      n|N) return 1 ;;
+      *)
+        abort "Invalid non-interactive openclaw choice. Use --openclaw-install=y|n."
+        ;;
+    esac
+  fi
+
+  if ! [ -t 0 ]; then
+    abort "Interactive mode requires a TTY for openclaw prompt. Use --non-interactive --openclaw-install=y|n."
   fi
 
   confirm "$prompt"
@@ -306,6 +352,7 @@ install_brew_formulae() {
     shellspec
     shfmt
     sqlite
+    starship
     tmux
     uv
     xan
@@ -555,7 +602,6 @@ install_npm_globals() {
     @mermaid-js/mermaid-cli
     bun
     firebase-tools
-    openclaw
   )
 
   if [ "$OS_NAME" != "Darwin" ]; then
@@ -571,6 +617,20 @@ install_npm_globals() {
     log "Installing ${pkg} via npm..."
     run npm install -g "$pkg"
   done
+}
+
+install_openclaw() {
+  if npm list -g --depth=0 openclaw >/dev/null 2>&1; then
+    log "openclaw already installed."
+    return 0
+  fi
+
+  if should_install_openclaw "Install openclaw via npm?"; then
+    log "Installing openclaw via npm..."
+    run npm install -g openclaw
+  else
+    log "Skipping openclaw install."
+  fi
 }
 
 install_chezmoi_and_apply() {
@@ -760,6 +820,7 @@ main() {
   install_espeak_ng
   install_nvm_and_node
   install_npm_globals
+  install_openclaw
   install_oh_my_zsh
   install_agent_browser_runtime
   install_or_notify_tailscale

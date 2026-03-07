@@ -19,6 +19,7 @@ An installer script for macOS and Linux that installs Homebrew, core CLI tools, 
 - Installs espeak-ng on Linux via apt-get or yum
 - Installs nvm and latest LTS Node.js
 - Installs npm global packages
+- Prompts whether to install `openclaw` via npm
 - Installs oh-my-zsh
 - Installs chezmoi and applies dotfiles from `https://github.com/kevinmhk/dotfiles`
 - Ensures `~/workspaces` exists
@@ -72,6 +73,7 @@ Homebrew formulae:
 - shellspec
 - shfmt
 - sqlite
+- starship
 - tmux
 - uv
 - xan
@@ -102,7 +104,7 @@ npm globals:
 - @mermaid-js/mermaid-cli
 - bun
 - firebase-tools
-- openclaw
+- openclaw (optional; prompted during setup)
 - @openai/codex (Linux only)
 
 uv tools:
@@ -121,11 +123,11 @@ Run the script from the repository root:
 scripts/setup.sh
 ```
 
-Non-interactive mode requires an explicit chezmoi decision:
+Non-interactive mode requires explicit choices for chezmoi and `openclaw`:
 
 ```bash
-scripts/setup.sh --non-interactive --chezmoi-apply=y
-scripts/setup.sh --non-interactive --chezmoi-apply=n
+scripts/setup.sh --non-interactive --chezmoi-apply=y --openclaw-install=y
+scripts/setup.sh --non-interactive --chezmoi-apply=n --openclaw-install=n
 ```
 
 ## Contributor Guide
@@ -176,5 +178,6 @@ Before running container tests, start Docker Desktop.
 ## Notes
 
 - The script prompts for chezmoi apply/init decisions in default interactive mode.
-- Use `--non-interactive` only with `--chezmoi-apply=y|n`.
+- The script also prompts whether to install `openclaw` in default interactive mode.
+- Use `--non-interactive` only with both `--chezmoi-apply=y|n` and `--openclaw-install=y|n`.
 - On Linux, Homebrew is installed under `/home/linuxbrew/.linuxbrew` by default.

@@ -15,8 +15,14 @@ SETUP_SCRIPT="${REPO_ROOT}/scripts/setup.sh"
   [[ "$output" == *"--chezmoi-apply=y|n is required when --non-interactive is set."* ]]
 }
 
+@test "--non-interactive requires --openclaw-install after --chezmoi-apply is provided" {
+  run "$SETUP_SCRIPT" --non-interactive --chezmoi-apply=y
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"--openclaw-install=y|n is required when --non-interactive is set."* ]]
+}
+
 @test "--chezmoi-apply rejects invalid values in non-interactive mode" {
-  run "$SETUP_SCRIPT" --non-interactive --chezmoi-apply=maybe
+  run "$SETUP_SCRIPT" --non-interactive --chezmoi-apply=maybe --openclaw-install=n
   [ "$status" -eq 1 ]
   [[ "$output" == *"Invalid value for --chezmoi-apply: maybe. Use y or n."* ]]
 }
@@ -25,4 +31,16 @@ SETUP_SCRIPT="${REPO_ROOT}/scripts/setup.sh"
   run "$SETUP_SCRIPT" --chezmoi-apply=y
   [ "$status" -eq 1 ]
   [[ "$output" == *"--chezmoi-apply is only valid with --non-interactive."* ]]
+}
+
+@test "--openclaw-install rejects invalid values in non-interactive mode" {
+  run "$SETUP_SCRIPT" --non-interactive --chezmoi-apply=n --openclaw-install=maybe
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"Invalid value for --openclaw-install: maybe. Use y or n."* ]]
+}
+
+@test "--openclaw-install is rejected without --non-interactive" {
+  run "$SETUP_SCRIPT" --openclaw-install=y
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"--openclaw-install is only valid with --non-interactive."* ]]
 }

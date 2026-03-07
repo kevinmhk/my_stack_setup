@@ -222,6 +222,7 @@ main() {
     shellspec
     shfmt
     sqlite
+    starship
     tmux
     uv
     xan
@@ -271,7 +272,6 @@ main() {
     @mermaid-js/mermaid-cli
     bun
     firebase-tools
-    openclaw
   )
 
   if [ "$OS_NAME" != "Darwin" ]; then
