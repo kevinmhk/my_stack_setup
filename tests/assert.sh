@@ -64,22 +64,22 @@ assert_command() {
 
 formula_command_name() {
   case "$1" in
-    steipete/tap/codexbar) printf '%s\n' "codexbar" ;;
-    difftastic) printf '%s\n' "difft" ;;
-    git-delta) printf '%s\n' "delta" ;;
-    ripgrep) printf '%s\n' "rg" ;;
-    neovim) printf '%s\n' "nvim" ;;
-    sqlite) printf '%s\n' "sqlite3" ;;
-    *) printf '%s\n' "$1" ;;
+  steipete/tap/codexbar) printf '%s\n' "codexbar" ;;
+  difftastic) printf '%s\n' "difft" ;;
+  git-delta) printf '%s\n' "delta" ;;
+  ripgrep) printf '%s\n' "rg" ;;
+  neovim) printf '%s\n' "nvim" ;;
+  sqlite) printf '%s\n' "sqlite3" ;;
+  *) printf '%s\n' "$1" ;;
   esac
 }
 
 cask_command_name() {
   case "$1" in
-    1password-cli) printf '%s\n' "op" ;;
-    dbeaver-community) printf '%s\n' "dbeaver" ;;
-    steipete/tap/codexbar) printf '%s\n' "codexbar" ;;
-    *) printf '%s\n' "$1" ;;
+  1password-cli) printf '%s\n' "op" ;;
+  dbeaver-community) printf '%s\n' "dbeaver" ;;
+  steipete/tap/codexbar) printf '%s\n' "codexbar" ;;
+  *) printf '%s\n' "$1" ;;
   esac
 }
 

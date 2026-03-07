@@ -50,46 +50,46 @@ EOF
 parse_args() {
   while [ "$#" -gt 0 ]; do
     case "$1" in
-      --non-interactive)
-        NONINTERACTIVE=1
-        ;;
-      --chezmoi-apply=*)
-        CHEZMOI_APPLY_CHOICE="${1#*=}"
-        ;;
-      --chezmoi-apply)
-        shift || abort "Missing value for --chezmoi-apply. Use y or n."
-        CHEZMOI_APPLY_CHOICE="$1"
-        ;;
-      --openclaw-install=*)
-        OPENCLAW_INSTALL_CHOICE="${1#*=}"
-        ;;
-      --openclaw-install)
-        shift || abort "Missing value for --openclaw-install. Use y or n."
-        OPENCLAW_INSTALL_CHOICE="$1"
-        ;;
-      --help|-h)
-        print_usage
-        exit 0
-        ;;
-      *)
-        abort "Unknown option: $1. Use --help for usage."
-        ;;
+    --non-interactive)
+      NONINTERACTIVE=1
+      ;;
+    --chezmoi-apply=*)
+      CHEZMOI_APPLY_CHOICE="${1#*=}"
+      ;;
+    --chezmoi-apply)
+      shift || abort "Missing value for --chezmoi-apply. Use y or n."
+      CHEZMOI_APPLY_CHOICE="$1"
+      ;;
+    --openclaw-install=*)
+      OPENCLAW_INSTALL_CHOICE="${1#*=}"
+      ;;
+    --openclaw-install)
+      shift || abort "Missing value for --openclaw-install. Use y or n."
+      OPENCLAW_INSTALL_CHOICE="$1"
+      ;;
+    --help | -h)
+      print_usage
+      exit 0
+      ;;
+    *)
+      abort "Unknown option: $1. Use --help for usage."
+      ;;
     esac
     shift
   done
 
   case "$CHEZMOI_APPLY_CHOICE" in
-    ""|y|Y|n|N) ;;
-    *)
-      abort "Invalid value for --chezmoi-apply: ${CHEZMOI_APPLY_CHOICE}. Use y or n."
-      ;;
+  "" | y | Y | n | N) ;;
+  *)
+    abort "Invalid value for --chezmoi-apply: ${CHEZMOI_APPLY_CHOICE}. Use y or n."
+    ;;
   esac
 
   case "$OPENCLAW_INSTALL_CHOICE" in
-    ""|y|Y|n|N) ;;
-    *)
-      abort "Invalid value for --openclaw-install: ${OPENCLAW_INSTALL_CHOICE}. Use y or n."
-      ;;
+  "" | y | Y | n | N) ;;
+  *)
+    abort "Invalid value for --openclaw-install: ${OPENCLAW_INSTALL_CHOICE}. Use y or n."
+    ;;
   esac
 
   if [ "$NONINTERACTIVE" -eq 1 ]; then
@@ -126,12 +126,12 @@ confirm() {
   fi
 
   case "$reply" in
-    [Yy]*)
-      return 0
-      ;;
-    *)
-      return 1
-      ;;
+  [Yy]*)
+    return 0
+    ;;
+  *)
+    return 1
+    ;;
   esac
 }
 
@@ -140,11 +140,11 @@ should_apply_chezmoi() {
 
   if [ "$NONINTERACTIVE" -eq 1 ]; then
     case "$CHEZMOI_APPLY_CHOICE" in
-      y|Y) return 0 ;;
-      n|N) return 1 ;;
-      *)
-        abort "Invalid non-interactive chezmoi choice. Use --chezmoi-apply=y|n."
-        ;;
+    y | Y) return 0 ;;
+    n | N) return 1 ;;
+    *)
+      abort "Invalid non-interactive chezmoi choice. Use --chezmoi-apply=y|n."
+      ;;
     esac
   fi
 
@@ -160,11 +160,11 @@ should_install_openclaw() {
 
   if [ "$NONINTERACTIVE" -eq 1 ]; then
     case "$OPENCLAW_INSTALL_CHOICE" in
-      y|Y) return 0 ;;
-      n|N) return 1 ;;
-      *)
-        abort "Invalid non-interactive openclaw choice. Use --openclaw-install=y|n."
-        ;;
+    y | Y) return 0 ;;
+    n | N) return 1 ;;
+    *)
+      abort "Invalid non-interactive openclaw choice. Use --openclaw-install=y|n."
+      ;;
     esac
   fi
 
@@ -261,22 +261,22 @@ ensure_brew_shellenv() {
 
 formula_command_name() {
   case "$1" in
-    steipete/tap/codexbar) printf '%s\n' "codexbar" ;;
-    difftastic) printf '%s\n' "difft" ;;
-    git-delta) printf '%s\n' "delta" ;;
-    ripgrep) printf '%s\n' "rg" ;;
-    neovim) printf '%s\n' "nvim" ;;
-    sqlite) printf '%s\n' "sqlite3" ;;
-    *) printf '%s\n' "$1" ;;
+  steipete/tap/codexbar) printf '%s\n' "codexbar" ;;
+  difftastic) printf '%s\n' "difft" ;;
+  git-delta) printf '%s\n' "delta" ;;
+  ripgrep) printf '%s\n' "rg" ;;
+  neovim) printf '%s\n' "nvim" ;;
+  sqlite) printf '%s\n' "sqlite3" ;;
+  *) printf '%s\n' "$1" ;;
   esac
 }
 
 cask_command_name() {
   case "$1" in
-    1password-cli) printf '%s\n' "op" ;;
-    dbeaver-community) printf '%s\n' "dbeaver" ;;
-    steipete/tap/codexbar) printf '%s\n' "codexbar" ;;
-    *) printf '%s\n' "$1" ;;
+  1password-cli) printf '%s\n' "op" ;;
+  dbeaver-community) printf '%s\n' "dbeaver" ;;
+  steipete/tap/codexbar) printf '%s\n' "codexbar" ;;
+  *) printf '%s\n' "$1" ;;
   esac
 }
 
@@ -457,27 +457,27 @@ install_dbeaver_linux() {
   os_like="${ID_LIKE:-${ID:-}}"
 
   case "$arch" in
-    x86_64|amd64)
-      if printf '%s' "$os_like" | grep -qiE 'debian|ubuntu'; then
-        url="https://dbeaver.io/files/dbeaver-ce_latest_amd64.deb"
-      elif printf '%s' "$os_like" | grep -qiE 'rhel|fedora|centos|rocky|almalinux'; then
-        url="https://dbeaver.io/files/dbeaver-ce-latest-stable.x86_64.rpm"
-      else
-        abort "Unsupported Linux distribution for DBeaver install: ${os_like}"
-      fi
-      ;;
-    aarch64|arm64)
-      if printf '%s' "$os_like" | grep -qiE 'debian|ubuntu'; then
-        url="https://dbeaver.io/files/dbeaver-ce_latest_arm64.deb"
-      elif printf '%s' "$os_like" | grep -qiE 'rhel|fedora|centos|rocky|almalinux'; then
-        url="https://dbeaver.io/files/dbeaver-ce-latest-stable.aarch64.rpm"
-      else
-        abort "Unsupported Linux distribution for DBeaver install: ${os_like}"
-      fi
-      ;;
-    *)
-      abort "Unsupported CPU architecture for DBeaver install: ${arch}"
-      ;;
+  x86_64 | amd64)
+    if printf '%s' "$os_like" | grep -qiE 'debian|ubuntu'; then
+      url="https://dbeaver.io/files/dbeaver-ce_latest_amd64.deb"
+    elif printf '%s' "$os_like" | grep -qiE 'rhel|fedora|centos|rocky|almalinux'; then
+      url="https://dbeaver.io/files/dbeaver-ce-latest-stable.x86_64.rpm"
+    else
+      abort "Unsupported Linux distribution for DBeaver install: ${os_like}"
+    fi
+    ;;
+  aarch64 | arm64)
+    if printf '%s' "$os_like" | grep -qiE 'debian|ubuntu'; then
+      url="https://dbeaver.io/files/dbeaver-ce_latest_arm64.deb"
+    elif printf '%s' "$os_like" | grep -qiE 'rhel|fedora|centos|rocky|almalinux'; then
+      url="https://dbeaver.io/files/dbeaver-ce-latest-stable.aarch64.rpm"
+    else
+      abort "Unsupported Linux distribution for DBeaver install: ${os_like}"
+    fi
+    ;;
+  *)
+    abort "Unsupported CPU architecture for DBeaver install: ${arch}"
+    ;;
   esac
 
   if ! command_exists curl; then
@@ -790,7 +790,7 @@ ensure_chezmoi_config() {
 
   log "Creating Chezmoi config: ${config_file}"
   run mkdir -p "$config_dir"
-  cat <<'EOF' > "$config_file"
+  cat <<'EOF' >"$config_file"
 [git]
     autoCommit = true
     autoPush = true

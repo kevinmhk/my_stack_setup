@@ -59,24 +59,24 @@ main() {
   fi
 
   case "$1" in
-    ubuntu)
-      run_image "ubuntu" "${REPO_ROOT}/tests/docker/ubuntu/Dockerfile"
-      ;;
-    centos)
-      run_image "centos" "${REPO_ROOT}/tests/docker/centos/Dockerfile"
-      ;;
-    --all)
-      run_image "ubuntu" "${REPO_ROOT}/tests/docker/ubuntu/Dockerfile"
-      run_image "centos" "${REPO_ROOT}/tests/docker/centos/Dockerfile"
-      ;;
-    --help)
-      usage
-      exit 0
-      ;;
-    *)
-      usage >&2
-      abort "Invalid target: $1. Use ubuntu, centos, or --all."
-      ;;
+  ubuntu)
+    run_image "ubuntu" "${REPO_ROOT}/tests/docker/ubuntu/Dockerfile"
+    ;;
+  centos)
+    run_image "centos" "${REPO_ROOT}/tests/docker/centos/Dockerfile"
+    ;;
+  --all)
+    run_image "ubuntu" "${REPO_ROOT}/tests/docker/ubuntu/Dockerfile"
+    run_image "centos" "${REPO_ROOT}/tests/docker/centos/Dockerfile"
+    ;;
+  --help)
+    usage
+    exit 0
+    ;;
+  *)
+    usage >&2
+    abort "Invalid target: $1. Use ubuntu, centos, or --all."
+    ;;
   esac
 
   log "Container tests completed."
