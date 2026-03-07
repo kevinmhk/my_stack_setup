@@ -340,6 +340,7 @@ install_brew_formulae() {
     lazygit
     llama.cpp
     micro
+    mtr
     neovim
     ngrok
     nmap

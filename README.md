@@ -67,6 +67,7 @@ Homebrew formulae:
 - lazysql
 - lazygit
 - micro
+- mtr
 - mole
 - neovim
 - ngrok

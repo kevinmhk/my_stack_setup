@@ -203,6 +203,7 @@ main() {
     lazysql
     lazygit
     micro
+    mtr
     neovim
     ngrok
     nmap
