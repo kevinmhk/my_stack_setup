@@ -2,8 +2,6 @@
 set -uo pipefail
 
 OS_NAME="$(uname -s)"
-BREW_ENV_LOADED=0
-NVM_ENV_LOADED=0
 FAILURES=()
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
@@ -32,7 +30,6 @@ is_container() {
 
 ensure_brew() {
   if command_exists brew; then
-    BREW_ENV_LOADED=1
     return 0
   fi
 
@@ -45,7 +42,6 @@ ensure_brew() {
   fi
 
   if command_exists brew; then
-    BREW_ENV_LOADED=1
     return 0
   fi
 
@@ -146,7 +142,6 @@ assert_npm_global() {
 
 ensure_nvm() {
   if command_exists nvm; then
-    NVM_ENV_LOADED=1
     return 0
   fi
 
@@ -176,8 +171,6 @@ ensure_nvm() {
     record_failure "nvm is not available after sourcing."
     return 1
   fi
-
-  NVM_ENV_LOADED=1
 }
 
 main() {
