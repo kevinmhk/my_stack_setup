@@ -31,4 +31,4 @@ WORKDIR /home/tester/app
 
 COPY --chown=tester:tester . /home/tester/app
 
-CMD ["bash", "-lc", "scripts/setup.sh && tests/assert.sh"]
+CMD ["bash"]

@@ -40,13 +40,15 @@ run_image() {
   local name="$1"
   local dockerfile="$2"
   local logfile="${LOG_DIR}/test_${name}.log"
+  local container_name="my_stack_setup_${name}"
+  local test_command="scripts/setup.sh --non-interactive --chezmoi-apply=n --openclaw-install=n && tests/assert.sh"
 
   log "Building ${name} image..."
-  docker build -f "$dockerfile" -t "my_stack_setup_${name}" "$REPO_ROOT"
+  docker build -f "$dockerfile" -t "$container_name" "$REPO_ROOT"
 
   log "Running ${name} container test..."
   mkdir -p "$LOG_DIR"
-  docker run --rm "my_stack_setup_${name}" | tee "$logfile"
+  docker run --rm "$container_name" bash -lc "$test_command" | tee "$logfile"
   log "Wrote ${name} logs to ${logfile}"
 }
 
