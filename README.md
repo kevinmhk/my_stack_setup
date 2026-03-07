@@ -1,13 +1,15 @@
 # My Stack Setup
 
-An installer script for macOS and Linux that installs Homebrew, core CLI tools, Node (via nvm), global npm packages, and applies dotfiles with chezmoi.
+Installer scripts for macOS, Linux, and Windows that bootstrap core CLI tools and machine setup conventions for this repo.
 
 ## Requirements
 
-- macOS or Linux (Debian-based or RedHat-based)
-- A POSIX shell environment
+- macOS or Linux (Debian-based or RedHat-based) for `scripts/setup.sh`
+- Windows with PowerShell for `scripts/setup-windows.ps1`
+- A POSIX shell environment for the macOS/Linux path
 - Network access
 - Sudo privileges may be required by Homebrew on Linux
+- Interactive approval is expected during Windows `vcredist2022` installation
 
 ## What It Does
 
@@ -34,6 +36,11 @@ An installer script for macOS and Linux that installs Homebrew, core CLI tools, 
 - Prints a reminder to onboard `.env` to `$HOME`
 - Prints a reminder to run `scripts/install-gemini-extensions.sh` after signing in to Gemini CLI
 - Logs to stdout and to a timestamped file in `logs/`
+- Sets PowerShell execution policy to `RemoteSigned` for `CurrentUser` on Windows when needed
+- Installs Scoop on Windows if missing
+- Adds the Scoop `extras` bucket on Windows
+- Installs Windows Scoop packages in sorted groups
+- Prints a reminder to update the PowerShell profile on Windows
 
 ## Installed Packages
 
@@ -115,12 +122,28 @@ uv tools:
 Linux system packages:
 - espeak-ng
 
+Windows Scoop packages:
+- bat
+- fd
+- fzf
+- lazygit
+- neovim
+- ripgrep
+- starship
+- vcredist2022
+
 ## Usage
 
 Run the script from the repository root:
 
 ```bash
 scripts/setup.sh
+```
+
+Windows PowerShell:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\setup-windows.ps1
 ```
 
 Non-interactive mode requires explicit choices for chezmoi and `openclaw`:
@@ -158,6 +181,12 @@ Assertions:
 tests/assert.sh
 ```
 
+Windows assertions:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\tests\assert-windows.ps1
+```
+
 Setup CLI smoke tests:
 
 ```bash
@@ -181,3 +210,5 @@ Before running container tests, start Docker Desktop.
 - The script also prompts whether to install `openclaw` in default interactive mode.
 - Use `--non-interactive` only with both `--chezmoi-apply=y|n` and `--openclaw-install=y|n`.
 - On Linux, Homebrew is installed under `/home/linuxbrew/.linuxbrew` by default.
+- On Windows, `vcredist2022` may trigger a Windows confirmation dialog during `scoop install`.
+- The Windows script does not edit the PowerShell profile; it prints a reminder instead.
