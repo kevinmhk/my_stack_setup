@@ -239,6 +239,7 @@ main() {
   if [ "$OS_NAME" = "Darwin" ]; then
     local casks=(
       1password-cli
+      betterdisplay
       claude-code
       codex
       dbeaver-community

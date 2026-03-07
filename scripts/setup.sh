@@ -408,6 +408,7 @@ install_brew_casks() {
 
   local casks=(
     1password-cli
+    betterdisplay
     claude-code
     codex
     dbeaver-community
