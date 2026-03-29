@@ -452,6 +452,37 @@ install_oh_my_zsh() {
   fi
 }
 
+ensure_linux_zsh_login_shell() {
+  local target_shell="/home/linuxbrew/.linuxbrew/bin/zsh"
+
+  if [ "$OS_NAME" != "Linux" ]; then
+    return 0
+  fi
+
+  if [ "${SHELL:-}" = "$target_shell" ]; then
+    log "Login shell already set to ${target_shell}."
+    return 0
+  fi
+
+  if [ ! -x "$target_shell" ]; then
+    add_reminder "Reminder: ${target_shell} is not available, so the login shell was not changed."
+    return 0
+  fi
+
+  if ! command_exists chsh; then
+    add_reminder "Reminder: chsh is not available, so the login shell was not changed to ${target_shell}."
+    return 0
+  fi
+
+  if [ "$NONINTERACTIVE" -eq 1 ]; then
+    add_reminder "Reminder: Run 'chsh -s ${target_shell}' to change your login shell on Linux."
+    return 0
+  fi
+
+  log "Changing login shell to ${target_shell}..."
+  run chsh -s "$target_shell"
+}
+
 install_brew_casks() {
   if [ "$OS_NAME" != "Darwin" ]; then
     log "Skipping Homebrew casks on non-macOS."
@@ -920,6 +951,7 @@ main() {
   install_npm_globals
   install_openclaw
   install_oh_my_zsh
+  ensure_linux_zsh_login_shell
   install_claude_code_linux
   install_agent_browser_runtime
   install_or_notify_tailscale
