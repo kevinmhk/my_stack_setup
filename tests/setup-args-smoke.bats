@@ -44,3 +44,9 @@ SETUP_SCRIPT="${REPO_ROOT}/scripts/setup.sh"
   [ "$status" -eq 1 ]
   [[ "$output" == *"--openclaw-install is only valid with --non-interactive."* ]]
 }
+
+@test "interactive Linux startup prompt requires a tty" {
+  run bash -lc "function uname(){ echo Linux; }; export -f uname; printf 'n\n' | \"$SETUP_SCRIPT\""
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"Interactive mode requires a TTY for the Linux startup confirmation."* ]]
+}

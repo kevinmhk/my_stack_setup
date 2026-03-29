@@ -116,12 +116,29 @@ parse_args() {
 confirm() {
   local prompt="$1"
   local default="${2:-n}"
+  local prompt_suffix='[y/N]'
   local reply
 
+  case "$default" in
+  y | Y)
+    prompt_suffix='[Y/n]'
+    ;;
+  n | N)
+    prompt_suffix='[y/N]'
+    ;;
+  *)
+    abort "Invalid default for confirm: ${default}. Use y or n."
+    ;;
+  esac
+
   if [ -t 0 ]; then
-    printf '%s [y/N]: ' "$prompt"
+    printf '%s %s: ' "$prompt" "$prompt_suffix"
     read -r reply
   else
+    reply="$default"
+  fi
+
+  if [ -z "$reply" ]; then
     reply="$default"
   fi
 
@@ -133,6 +150,23 @@ confirm() {
     return 1
     ;;
   esac
+}
+
+confirm_linux_user_requirements() {
+  if [ "$OS_NAME" != "Linux" ] || [ "$NONINTERACTIVE" -eq 1 ]; then
+    return 0
+  fi
+
+  if ! [ -t 0 ]; then
+    abort "Interactive mode requires a TTY for the Linux startup confirmation."
+  fi
+
+  if confirm "Linux setup should be run by a non-root user with sudo permission. Continue?" y; then
+    return 0
+  fi
+
+  log "Exiting setup at user request."
+  exit 0
 }
 
 should_apply_chezmoi() {
@@ -834,6 +868,7 @@ EOF
 
 main() {
   parse_args "$@"
+  confirm_linux_user_requirements
   setup_logging
   ensure_xcode_cli_tools
   ensure_brew_shellenv
