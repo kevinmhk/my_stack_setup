@@ -469,6 +469,11 @@ ensure_linux_zsh_login_shell() {
     return 0
   fi
 
+  if [ -f /etc/shells ] && ! grep -qxF "$target_shell" /etc/shells; then
+    log "Adding ${target_shell} to /etc/shells..."
+    printf '%s\n' "$target_shell" | run_sudo "sudo is required to update /etc/shells." tee -a /etc/shells >/dev/null
+  fi
+
   if ! command_exists chsh; then
     add_reminder "Reminder: chsh is not available, so the login shell was not changed to ${target_shell}."
     return 0
