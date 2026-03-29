@@ -327,6 +327,7 @@ formula_command_name() {
 cask_command_name() {
   case "$1" in
   1password-cli) printf '%s\n' "op" ;;
+  claude-code) printf '%s\n' "claude" ;;
   dbeaver-community) printf '%s\n' "dbeaver" ;;
   steipete/tap/codexbar) printf '%s\n' "codexbar" ;;
   *) printf '%s\n' "$1" ;;
@@ -696,6 +697,24 @@ install_npm_globals() {
   done
 }
 
+install_claude_code_linux() {
+  if [ "$OS_NAME" != "Linux" ]; then
+    return 0
+  fi
+
+  if command_exists claude; then
+    log "Claude Code already installed."
+    return 0
+  fi
+
+  if ! command_exists curl; then
+    abort "curl is required to install Claude Code on Linux."
+  fi
+
+  log "Installing Claude Code via official Linux installer..."
+  run bash -c "curl -fsSL https://claude.ai/install.sh | bash"
+}
+
 install_openclaw() {
   if npm list -g --depth=0 openclaw >/dev/null 2>&1; then
     log "openclaw already installed."
@@ -901,6 +920,7 @@ main() {
   install_npm_globals
   install_openclaw
   install_oh_my_zsh
+  install_claude_code_linux
   install_agent_browser_runtime
   install_or_notify_tailscale
   install_vim_plug

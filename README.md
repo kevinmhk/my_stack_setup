@@ -18,6 +18,7 @@ Installer scripts for macOS, Linux, and Windows that bootstrap core CLI tools an
 - Installs Homebrew formulae
 - Installs Homebrew casks on macOS only
 - Installs DBeaver on Linux via native package
+- Installs Claude Code on Linux via the official installer script
 - Installs espeak-ng on Linux via apt-get or yum
 - Installs nvm and latest LTS Node.js
 - Installs npm global packages
@@ -120,6 +121,9 @@ uv tools:
 - harlequin
 - ruff@latest
 - ty@latest
+
+Linux native installs:
+- Claude Code (via `curl -fsSL https://claude.ai/install.sh | bash`)
 
 Linux system packages:
 - espeak-ng

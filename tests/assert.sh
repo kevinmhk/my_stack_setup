@@ -73,6 +73,7 @@ formula_command_name() {
 cask_command_name() {
   case "$1" in
   1password-cli) printf '%s\n' "op" ;;
+  claude-code) printf '%s\n' "claude" ;;
   dbeaver-community) printf '%s\n' "dbeaver" ;;
   steipete/tap/codexbar) printf '%s\n' "codexbar" ;;
   *) printf '%s\n' "$1" ;;
@@ -277,6 +278,7 @@ main() {
     assert_npm_global "$pkg" || true
   done
 
+  assert_command claude || true
   assert_command chezmoi || true
   if [ ! -d "$HOME/.oh-my-zsh" ]; then
     record_failure "oh-my-zsh not installed at ${HOME}/.oh-my-zsh"
