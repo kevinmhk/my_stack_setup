@@ -35,6 +35,21 @@ command_exists() {
   command -v "$1" >/dev/null 2>&1
 }
 
+run_sudo() {
+  local missing_sudo_message="$1"
+  shift
+
+  if ! command_exists sudo; then
+    abort "$missing_sudo_message"
+  fi
+
+  if [ "$NONINTERACTIVE" -eq 1 ]; then
+    run sudo -n "$@"
+  else
+    run sudo "$@"
+  fi
+}
+
 print_usage() {
   cat <<'EOF'
 Usage: scripts/setup.sh [--non-interactive --chezmoi-apply=y|n --openclaw-install=y|n] [--help]
@@ -110,7 +125,11 @@ parse_args() {
     abort "--openclaw-install is only valid with --non-interactive."
   fi
 
-  export NONINTERACTIVE
+  if [ "$NONINTERACTIVE" -eq 1 ]; then
+    export NONINTERACTIVE=1
+  else
+    export -n NONINTERACTIVE 2>/dev/null || true
+  fi
 }
 
 confirm() {
@@ -479,8 +498,8 @@ ensure_linux_build_essential() {
     fi
 
     log "Installing build-essential via apt-get..."
-    run sudo -n apt-get update
-    run sudo -n apt-get install -y build-essential
+    run_sudo "sudo is required to install build-essential." apt-get update
+    run_sudo "sudo is required to install build-essential." apt-get install -y build-essential
     return 0
   fi
 
@@ -555,23 +574,15 @@ install_dbeaver_linux() {
   run curl -fsSL -o "$tmp_file" "$url"
 
   if printf '%s' "$url" | grep -qE '\.deb$'; then
-    if command_exists sudo; then
-      run sudo -n apt-get update
-      run sudo -n apt-get install -y "$tmp_file"
-    else
-      abort "sudo is required to install the DBeaver .deb package."
-    fi
+    run_sudo "sudo is required to install the DBeaver .deb package." apt-get update
+    run_sudo "sudo is required to install the DBeaver .deb package." apt-get install -y "$tmp_file"
   else
-    if command_exists sudo; then
-      if command_exists dnf; then
-        run sudo -n dnf -y install "$tmp_file"
-      elif command_exists yum; then
-        run sudo -n yum -y install "$tmp_file"
-      else
-        abort "Neither dnf nor yum is available to install the DBeaver .rpm package."
-      fi
+    if command_exists dnf; then
+      run_sudo "sudo is required to install the DBeaver .rpm package." dnf -y install "$tmp_file"
+    elif command_exists yum; then
+      run_sudo "sudo is required to install the DBeaver .rpm package." yum -y install "$tmp_file"
     else
-      abort "sudo is required to install the DBeaver .rpm package."
+      abort "Neither dnf nor yum is available to install the DBeaver .rpm package."
     fi
   fi
 }
@@ -586,20 +597,16 @@ install_espeak_ng() {
     return 0
   fi
 
-  if ! command_exists sudo; then
-    abort "sudo is required to install espeak-ng."
-  fi
-
   if command_exists apt-get; then
     log "Installing espeak-ng via apt-get..."
-    run sudo -n apt-get update
-    run sudo -n apt-get install -y espeak-ng
+    run_sudo "sudo is required to install espeak-ng." apt-get update
+    run_sudo "sudo is required to install espeak-ng." apt-get install -y espeak-ng
     return 0
   fi
 
   if command_exists yum; then
     log "Installing espeak-ng via yum..."
-    run sudo -n yum -y install espeak-ng
+    run_sudo "sudo is required to install espeak-ng." yum -y install espeak-ng
     return 0
   fi
 

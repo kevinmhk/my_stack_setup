@@ -209,6 +209,7 @@ Before running container tests, start Docker Desktop.
 ## Notes
 
 - On Linux in default interactive mode, the script first asks you to confirm that you are running it as a non-root user with sudo permission; `Y`, `y`, or pressing Enter continues, while `N` or `n` exits immediately.
+- On Linux, privileged package installs use `sudo` in default interactive mode and `sudo -n` in `--non-interactive` mode.
 - The script prompts for chezmoi apply/init decisions in default interactive mode.
 - The script also prompts whether to install `openclaw` in default interactive mode.
 - Use `--non-interactive` only with both `--chezmoi-apply=y|n` and `--openclaw-install=y|n`.
