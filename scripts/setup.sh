@@ -569,7 +569,11 @@ install_dbeaver_linux() {
     abort "curl is required to install DBeaver on Linux."
   fi
 
-  tmp_file="$(mktemp)"
+  if printf '%s' "$url" | grep -qE '\.deb$'; then
+    tmp_file="$(mktemp --suffix=.deb)"
+  else
+    tmp_file="$(mktemp)"
+  fi
   log "Downloading DBeaver from ${url}..."
   run curl -fsSL -o "$tmp_file" "$url"
 
