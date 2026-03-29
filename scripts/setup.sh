@@ -428,6 +428,36 @@ install_brew_casks() {
   done
 }
 
+ensure_linux_build_essential() {
+  if [ "$OS_NAME" != "Linux" ]; then
+    return 0
+  fi
+
+  if command_exists apt-get; then
+    if command_exists dpkg-query &&
+      dpkg-query -W -f='${Status}' build-essential 2>/dev/null | grep -q '^install ok installed$'; then
+      log "build-essential already installed."
+      return 0
+    fi
+
+    if ! command_exists sudo; then
+      abort "sudo is required to install build-essential."
+    fi
+
+    log "Installing build-essential via apt-get..."
+    run sudo -n apt-get update
+    run sudo -n apt-get install -y build-essential
+    return 0
+  fi
+
+  if command_exists gcc && command_exists make; then
+    log "Linux build toolchain already available."
+    return 0
+  fi
+
+  abort "Unable to verify Linux build prerequisites: apt-get is unavailable and gcc/make were not found."
+}
+
 install_dbeaver_linux() {
   if [ "$OS_NAME" != "Linux" ]; then
     return 0
@@ -816,6 +846,7 @@ main() {
   run brew tap bats-core/bats-core
   run brew update
 
+  ensure_linux_build_essential
   install_brew_formulae
   install_brew_casks
   install_dbeaver_linux
