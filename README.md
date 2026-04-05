@@ -97,6 +97,7 @@ Homebrew formulae:
 Homebrew casks (macOS only):
 - 1password-cli
 - betterdisplay
+- cyberduck
 - claude-code
 - codex
 - dbeaver-community

@@ -241,6 +241,7 @@ main() {
     local casks=(
       1password-cli
       betterdisplay
+      cyberduck
       claude-code
       codex
       dbeaver-community
