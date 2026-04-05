@@ -188,6 +188,24 @@ confirm_linux_user_requirements() {
   exit 0
 }
 
+should_install_linux_vps_gui_packages() {
+  local prompt="$1"
+
+  if [ "$OS_NAME" != "Linux" ]; then
+    return 1
+  fi
+
+  if [ "$NONINTERACTIVE" -eq 1 ]; then
+    return 1
+  fi
+
+  if ! [ -t 0 ]; then
+    abort "Interactive mode requires a TTY for the Linux VPS GUI package prompt."
+  fi
+
+  confirm "$prompt" y
+}
+
 should_apply_chezmoi() {
   local prompt="$1"
 
@@ -525,6 +543,11 @@ ensure_linux_build_essential() {
     return 0
   fi
 
+  if command_exists gcc && command_exists make; then
+    log "Linux build toolchain already available."
+    return 0
+  fi
+
   if command_exists apt-get; then
     if command_exists dpkg-query &&
       dpkg-query -W -f='${Status}' build-essential 2>/dev/null | grep -q '^install ok installed$'; then
@@ -542,12 +565,122 @@ ensure_linux_build_essential() {
     return 0
   fi
 
-  if command_exists gcc && command_exists make; then
-    log "Linux build toolchain already available."
+  if command_exists dnf; then
+    log "Installing Development Tools via dnf group install..."
+    run_sudo "sudo is required to install Development Tools." dnf -y group install "Development Tools"
     return 0
   fi
 
-  abort "Unable to verify Linux build prerequisites: apt-get is unavailable and gcc/make were not found."
+  if command_exists yum; then
+    log "Installing Development Tools via yum groupinstall..."
+    run_sudo "sudo is required to install Development Tools." yum -y groupinstall "Development Tools"
+    return 0
+  fi
+
+  abort "Unable to verify Linux build prerequisites: apt-get, dnf, and yum are unavailable and gcc/make were not found."
+}
+
+install_linux_vps_gui_packages() {
+  if [ "$OS_NAME" != "Linux" ]; then
+    return 0
+  fi
+
+  if ! should_install_linux_vps_gui_packages "Install remote GUI packages for a Linux VPS?"; then
+    log "Skipping Linux VPS remote GUI package install."
+    return 0
+  fi
+
+  if ! command_exists sudo; then
+    abort "sudo is required to install the Linux VPS remote GUI packages."
+  fi
+
+  if ! command_exists wget; then
+    abort "wget is required to download Google Chrome for the Linux VPS remote GUI setup."
+  fi
+
+  if command_exists apt-get; then
+    if ! command_exists dpkg-query; then
+      abort "dpkg-query is required to verify the Linux VPS remote GUI packages."
+    fi
+
+    local debian_packages=(
+      xauth
+      x11-apps
+      xvfb
+      x11vnc
+      openbox
+      python3-xdg
+      menu
+      x11-utils
+    )
+    local missing_debian_packages=()
+    local pkg
+
+    for pkg in "${debian_packages[@]}"; do
+      if ! dpkg-query -W -f='${Status}' "$pkg" 2>/dev/null | grep -q '^install ok installed$'; then
+        missing_debian_packages+=("$pkg")
+      fi
+    done
+
+    if [ "${#missing_debian_packages[@]}" -gt 0 ]; then
+      log "Installing Linux VPS remote GUI packages via apt-get..."
+      run_sudo "sudo is required to update apt package metadata." apt-get update
+      run_sudo "sudo is required to install the Linux VPS remote GUI packages." \
+        apt-get install -y "${missing_debian_packages[@]}"
+    else
+      log "Linux VPS remote GUI packages already installed."
+    fi
+
+    if command_exists google-chrome || command_exists google-chrome-stable; then
+      log "Google Chrome already installed."
+      return 0
+    fi
+
+    local chrome_deb
+    chrome_deb="$(mktemp --suffix=.deb)"
+
+    log "Downloading Google Chrome .deb package..."
+    run wget -O "$chrome_deb" https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+
+    log "Installing Google Chrome via dpkg..."
+    if ! run_sudo "sudo is required to install Google Chrome." dpkg -i "$chrome_deb"; then
+      log "dpkg reported missing dependencies for Google Chrome; continuing with apt --fix-broken install."
+    fi
+    log "Fixing Google Chrome package dependencies via apt..."
+    run_sudo "sudo is required to fix Google Chrome package dependencies." apt --fix-broken install -y
+
+    run rm -f "$chrome_deb"
+    return 0
+  fi
+
+  if command_exists dnf || command_exists yum; then
+    if command_exists google-chrome || command_exists google-chrome-stable; then
+      log "Google Chrome already installed."
+      add_reminder "Reminder: The optional Linux VPS remote GUI package bundle is currently only implemented for Debian-based systems. On this RHEL-based system, Google Chrome is already installed."
+      return 0
+    fi
+
+    local chrome_rpm
+    chrome_rpm="$(mktemp --suffix=.rpm)"
+
+    add_reminder "Reminder: The optional Linux VPS remote GUI package bundle is currently only implemented for Debian-based systems. On this RHEL-based system, only Google Chrome was installed."
+
+    log "Downloading Google Chrome .rpm package..."
+    run wget -O "$chrome_rpm" https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
+
+    if command_exists dnf; then
+      log "Installing Google Chrome via dnf..."
+      run_sudo "sudo is required to install Google Chrome." dnf -y install "$chrome_rpm"
+    else
+      log "Installing Google Chrome via yum..."
+      run_sudo "sudo is required to install Google Chrome." yum -y install "$chrome_rpm"
+    fi
+
+    run rm -f "$chrome_rpm"
+    return 0
+  fi
+
+  abort "Linux VPS remote GUI setup requires apt-get, dnf, or yum."
 }
 
 install_dbeaver_linux() {
@@ -950,6 +1083,7 @@ main() {
   run brew update
 
   ensure_linux_build_essential
+  install_linux_vps_gui_packages
   install_brew_formulae
   install_brew_casks
   install_dbeaver_linux

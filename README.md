@@ -19,7 +19,9 @@ Installer scripts for macOS, Linux, and Windows that bootstrap core CLI tools an
 - Installs Homebrew casks on macOS only
 - Installs DBeaver on Linux via native package
 - Installs Claude Code on Linux via the official installer script
+- Installs Linux build tools via `build-essential` on Debian-based systems or `Development Tools` on RHEL-based systems
 - Installs espeak-ng on Linux via apt-get or yum
+- Prompts on Linux whether to install optional VPS remote GUI packages and Google Chrome
 - Installs nvm and latest LTS Node.js
 - Installs npm global packages
 - Prompts whether to install `openclaw` via npm
@@ -130,6 +132,18 @@ Linux native installs:
 
 Linux system packages:
 - espeak-ng
+- xauth (optional Linux VPS remote GUI prompt)
+- x11-apps (optional Linux VPS remote GUI prompt)
+- xvfb (optional Linux VPS remote GUI prompt)
+- x11vnc (optional Linux VPS remote GUI prompt)
+- openbox (optional Linux VPS remote GUI prompt)
+- python3-xdg (optional Linux VPS remote GUI prompt)
+- menu (optional Linux VPS remote GUI prompt)
+- x11-utils (optional Linux VPS remote GUI prompt)
+
+Linux optional downloads:
+- Google Chrome via `wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb` followed by `dpkg -i` and `apt --fix-broken install -y`
+- Google Chrome on RHEL-based systems via `wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm` followed by `dnf install` or `yum install`
 
 Windows Scoop packages:
 - bat
@@ -216,6 +230,8 @@ Before running container tests, start Docker Desktop.
 ## Notes
 
 - On Linux in default interactive mode, the script first asks you to confirm that you are running it as a non-root user with sudo permission; `Y`, `y`, or pressing Enter continues, while `N` or `n` exits immediately.
+- On Linux, build tool bootstrap uses `apt-get install -y build-essential` on Debian-based systems and `dnf group install "Development Tools"` or `yum groupinstall "Development Tools"` on RHEL-based systems when `gcc` and `make` are not already present.
+- After the Linux build tool step finishes in default interactive mode, the script asks whether to install optional VPS remote GUI packages. On Debian-based systems, `Y`, `y`, or pressing Enter installs `xauth`, `x11-apps`, `xvfb`, `x11vnc`, `openbox`, `python3-xdg`, `menu`, `x11-utils`, and Google Chrome. On RHEL-based systems, that flow currently installs only Google Chrome and prints a reminder that the GUI package bundle is not implemented yet.
 - On Linux, privileged package installs use `sudo` in default interactive mode and `sudo -n` in `--non-interactive` mode.
 - On Linux, the script adds `/home/linuxbrew/.linuxbrew/bin/zsh` to `/etc/shells` when needed and then attempts `chsh -s /home/linuxbrew/.linuxbrew/bin/zsh` only when that Homebrew zsh path exists; in `--non-interactive` mode it prints a reminder instead of prompting.
 - The script prompts for chezmoi apply/init decisions in default interactive mode.
