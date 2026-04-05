@@ -249,9 +249,11 @@ main() {
       font-hack-nerd-font
       font-0xproto-nerd-font
       ghostty
-      thaw
       steipete/tap/codexbar
+      thaw
+      tigervnc
       warp
+      xquartz
     )
 
     local cask

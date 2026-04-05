@@ -103,9 +103,11 @@ Homebrew casks (macOS only):
 - font-hack-nerd-font
 - font-0xproto-nerd-font
 - ghostty
-- thaw
 - steipete/tap/codexbar
+- thaw
+- tigervnc
 - warp
+- xquartz
 
 npm globals:
 - @google/gemini-cli
