@@ -26,7 +26,8 @@ Installer scripts for macOS, Linux, and Windows that bootstrap core CLI tools an
 - Installs npm global packages
 - Prompts whether to install `openclaw` via npm
 - Installs oh-my-zsh
-- On Linux, adds `/home/linuxbrew/.linuxbrew/bin/zsh` to `/etc/shells` when needed and then attempts to change the login shell to that path after zsh setup
+- Installs `zsh` via native Linux packages when needed
+- On Linux, adds the detected `zsh` path to `/etc/shells` when needed and then attempts to change the login shell to that path after zsh setup
 - Installs chezmoi and applies dotfiles from `https://github.com/kevinmhk/dotfiles`
 - Ensures `~/workspaces` exists
 - Creates `~/.config/chezmoi.toml` with auto-commit/auto-push and `delta` as diff pager
@@ -91,7 +92,6 @@ Homebrew formulae:
 - xan
 - yazi
 - zellij
-- zsh
 - steipete/tap/codexbar (Linux only)
 
 Homebrew casks (macOS only):
@@ -132,6 +132,7 @@ Linux native installs:
 - Claude Code (via `curl -fsSL https://claude.ai/install.sh | bash`)
 
 Linux system packages:
+- zsh
 - espeak-ng
 - xauth (optional Linux VPS remote GUI prompt)
 - x11-apps (optional Linux VPS remote GUI prompt)
@@ -234,7 +235,7 @@ Before running container tests, start Docker Desktop.
 - On Linux, build tool bootstrap uses `apt-get install -y build-essential` on Debian-based systems and `dnf group install "Development Tools"` or `yum groupinstall "Development Tools"` on RHEL-based systems when `gcc` and `make` are not already present.
 - After the Linux build tool step finishes in default interactive mode, the script asks whether to install optional VPS remote GUI packages. On Debian-based systems, `Y`, `y`, or pressing Enter installs `xauth`, `x11-apps`, `xvfb`, `x11vnc`, `openbox`, `python3-xdg`, `menu`, `x11-utils`, and Google Chrome. On RHEL-based systems, that flow currently installs only Google Chrome and prints a reminder that the GUI package bundle is not implemented yet.
 - On Linux, privileged package installs use `sudo` in default interactive mode and `sudo -n` in `--non-interactive` mode.
-- On Linux, the script adds `/home/linuxbrew/.linuxbrew/bin/zsh` to `/etc/shells` when needed and then attempts `chsh -s /home/linuxbrew/.linuxbrew/bin/zsh` only when that Homebrew zsh path exists; in `--non-interactive` mode it prints a reminder instead of prompting.
+- On Linux, the script installs `zsh` via `apt-get`, `dnf`, or `yum` when needed, then adds the detected `zsh` path to `/etc/shells` when needed and attempts `chsh -s <detected-zsh-path>`; in `--non-interactive` mode it prints a reminder instead of prompting.
 - The script prompts for chezmoi apply/init decisions in default interactive mode.
 - The script also prompts whether to install `openclaw` in default interactive mode.
 - Use `--non-interactive` only with both `--chezmoi-apply=y|n` and `--openclaw-install=y|n`.
