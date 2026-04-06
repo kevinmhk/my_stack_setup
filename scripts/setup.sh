@@ -288,6 +288,20 @@ should_purge_chezmoi() {
 	confirm "$prompt"
 }
 
+should_install_shell_welcome_messages_and_tools_reminder() {
+	local prompt="$1"
+
+	if [ "$NONINTERACTIVE" -eq 1 ]; then
+		return 1
+	fi
+
+	if ! [ -t 0 ]; then
+		abort "Interactive mode requires a TTY for the shell welcome message prompt."
+	fi
+
+	confirm "$prompt" y
+}
+
 setup_vps_gui_start_scripts_if_requested() {
 	local workspace_dir="${HOME}/workspaces"
 	local repo_dir="${workspace_dir}/vps-gui-scripts"
@@ -321,6 +335,76 @@ setup_vps_gui_start_scripts_if_requested() {
 		cd "$deploy_dir"
 		run bash ./deploy.sh
 	)
+}
+
+install_shell_welcome_message_repo() {
+	local workspace_dir="$1"
+	local repo_url="$2"
+	local repo_name
+	local repo_dir
+	local scripts_dir
+	local install_script
+	local deploy_script
+
+	repo_name="$(basename "$repo_url" .git)"
+	repo_dir="${workspace_dir}/${repo_name}"
+	scripts_dir="${repo_dir}/scripts"
+	install_script="${scripts_dir}/install.sh"
+	deploy_script="${scripts_dir}/deploy.sh"
+
+	if [ -d "$repo_dir" ]; then
+		log "Shell welcome message repo already exists at ${repo_dir}."
+	else
+		log "Cloning ${repo_url} into ${workspace_dir}..."
+		(
+			cd "$workspace_dir"
+			run git clone "$repo_url"
+		)
+	fi
+
+	if [ -f "$install_script" ]; then
+		log "Running install.sh for ${repo_name}..."
+		(
+			cd "$scripts_dir"
+			run bash ./install.sh
+		)
+		return 0
+	fi
+
+	if [ -f "$deploy_script" ]; then
+		log "Running deploy.sh for ${repo_name}..."
+		(
+			cd "$scripts_dir"
+			run bash ./deploy.sh
+		)
+		return 0
+	fi
+
+	abort "Expected install.sh or deploy.sh in ${scripts_dir}"
+}
+
+install_shell_welcome_messages_and_tools_reminder_if_requested() {
+	local workspace_dir="${HOME}/workspaces"
+	local repo_urls=(
+		https://github.com/kevinmhk/my_tools.git
+		https://github.com/kevinmhk/zsh_zellij_ls_welcome_message.git
+		https://github.com/kevinmhk/zsh_chezmoi_status_welcome_message.git
+		https://github.com/kevinmhk/zsh_tmux_ls_welcome_message.git
+		https://github.com/kevinmhk/zsh_ai_agent_welcome_message.git
+	)
+	local repo_url
+
+	if ! should_install_shell_welcome_messages_and_tools_reminder "Install Shell Welcome Messages and Tools Reminder now?"; then
+		log "Skipping Shell Welcome Messages and Tools Reminder install."
+		return 0
+	fi
+
+	ensure_workspaces_dir
+	brew_install_if_missing git
+
+	for repo_url in "${repo_urls[@]}"; do
+		install_shell_welcome_message_repo "$workspace_dir" "$repo_url"
+	done
 }
 
 should_install_openclaw() {
@@ -1255,6 +1339,7 @@ main() {
 	install_harlequin
 	ensure_chezmoi_config
 	install_chezmoi_and_apply
+	install_shell_welcome_messages_and_tools_reminder_if_requested
 	remind_flutter_install
 	remind_vim_plug_install
 	remind_mason_install_all

@@ -31,6 +31,7 @@ Installer scripts for macOS, Linux, and Windows that bootstrap core CLI tools an
 - On Linux, adds the detected `zsh` path to `/etc/shells` when needed and then attempts to change the login shell to that path after zsh setup
 - Installs chezmoi and applies dotfiles from `https://github.com/kevinmhk/dotfiles`
 - Prompts after a successful chezmoi apply/init flow whether to run `chezmoi purge --force`
+- Prompts after the chezmoi step whether to install Shell Welcome Messages and Tools Reminder repositories into `~/workspaces` and run each repo's `scripts/install.sh` or `scripts/deploy.sh`
 - Ensures `~/workspaces` exists
 - Creates `~/.config/chezmoi.toml` with auto-commit/auto-push and `delta` as diff pager
 - Installs Tailscale on Linux; reminds to install on macOS
@@ -240,6 +241,7 @@ Before running container tests, start Docker Desktop.
 - On Linux, privileged package installs use `sudo` in default interactive mode and `sudo -n` in `--non-interactive` mode.
 - On Linux, the script installs `zsh` via `apt-get`, `dnf`, or `yum` when needed, then adds the detected `zsh` path to `/etc/shells` when needed and attempts `chsh -s <detected-zsh-path>`; in `--non-interactive` mode it prints a reminder instead of prompting.
 - After a successful `chezmoi apply` or `chezmoi init --apply`, the script prompts whether to run `chezmoi purge --force`.
+- After `install_chezmoi_and_apply` completes, the script prompts whether to install Shell Welcome Messages and Tools Reminder. If accepted, it ensures `~/workspaces` exists, clones `my_tools`, `zsh_zellij_ls_welcome_message`, `zsh_chezmoi_status_welcome_message`, `zsh_tmux_ls_welcome_message`, and `zsh_ai_agent_welcome_message`, then runs either `scripts/install.sh` or `scripts/deploy.sh` in each repo.
 - The script prompts for chezmoi apply/init decisions in default interactive mode.
 - The script also prompts whether to install `openclaw` in default interactive mode.
 - Use `--non-interactive` only with `--chezmoi-apply=y|n`, `--chezmoi-purge=y|n`, and `--openclaw-install=y|n`.
