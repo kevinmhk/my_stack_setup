@@ -4,6 +4,7 @@ set -euo pipefail
 # Interactive by default
 NONINTERACTIVE=0
 CHEZMOI_APPLY_CHOICE=""
+CHEZMOI_PURGE_CHOICE=""
 OPENCLAW_INSTALL_CHOICE=""
 
 DOTFILES_REPO_URL="https://github.com/kevinmhk/dotfiles.git"
@@ -52,11 +53,12 @@ run_sudo() {
 
 print_usage() {
 	cat <<'EOF'
-Usage: scripts/setup.sh [--non-interactive --chezmoi-apply=y|n --openclaw-install=y|n] [--help]
+Usage: scripts/setup.sh [--non-interactive --chezmoi-apply=y|n --chezmoi-purge=y|n --openclaw-install=y|n] [--help]
 
 Options:
   --non-interactive       Run without prompts.
   --chezmoi-apply=y|n     Required with --non-interactive; controls chezmoi apply/init --apply.
+  --chezmoi-purge=y|n     Required with --non-interactive; controls post-apply chezmoi purge.
   --openclaw-install=y|n  Required with --non-interactive; controls optional openclaw npm install.
   --help, -h              Show this help message.
 EOF
@@ -74,6 +76,13 @@ parse_args() {
 		--chezmoi-apply)
 			shift || abort "Missing value for --chezmoi-apply. Use y or n."
 			CHEZMOI_APPLY_CHOICE="$1"
+			;;
+		--chezmoi-purge=*)
+			CHEZMOI_PURGE_CHOICE="${1#*=}"
+			;;
+		--chezmoi-purge)
+			shift || abort "Missing value for --chezmoi-purge. Use y or n."
+			CHEZMOI_PURGE_CHOICE="$1"
 			;;
 		--openclaw-install=*)
 			OPENCLAW_INSTALL_CHOICE="${1#*=}"
@@ -100,6 +109,13 @@ parse_args() {
 		;;
 	esac
 
+	case "$CHEZMOI_PURGE_CHOICE" in
+	"" | y | Y | n | N) ;;
+	*)
+		abort "Invalid value for --chezmoi-purge: ${CHEZMOI_PURGE_CHOICE}. Use y or n."
+		;;
+	esac
+
 	case "$OPENCLAW_INSTALL_CHOICE" in
 	"" | y | Y | n | N) ;;
 	*)
@@ -112,6 +128,10 @@ parse_args() {
 			abort "--chezmoi-apply=y|n is required when --non-interactive is set."
 		fi
 
+		if [ -z "$CHEZMOI_PURGE_CHOICE" ]; then
+			abort "--chezmoi-purge=y|n is required when --non-interactive is set."
+		fi
+
 		if [ -z "$OPENCLAW_INSTALL_CHOICE" ]; then
 			abort "--openclaw-install=y|n is required when --non-interactive is set."
 		fi
@@ -119,6 +139,10 @@ parse_args() {
 
 	if [ "$NONINTERACTIVE" -eq 0 ] && [ -n "$CHEZMOI_APPLY_CHOICE" ]; then
 		abort "--chezmoi-apply is only valid with --non-interactive."
+	fi
+
+	if [ "$NONINTERACTIVE" -eq 0 ] && [ -n "$CHEZMOI_PURGE_CHOICE" ]; then
+		abort "--chezmoi-purge is only valid with --non-interactive."
 	fi
 
 	if [ "$NONINTERACTIVE" -eq 0 ] && [ -n "$OPENCLAW_INSTALL_CHOICE" ]; then
@@ -226,6 +250,26 @@ should_apply_chezmoi() {
 	confirm "$prompt"
 }
 
+should_purge_chezmoi() {
+	local prompt="$1"
+
+	if [ "$NONINTERACTIVE" -eq 1 ]; then
+		case "$CHEZMOI_PURGE_CHOICE" in
+		y | Y) return 0 ;;
+		n | N) return 1 ;;
+		*)
+			abort "Invalid non-interactive chezmoi purge choice. Use --chezmoi-purge=y|n."
+			;;
+		esac
+	fi
+
+	if ! [ -t 0 ]; then
+		abort "Interactive mode requires a TTY for chezmoi purge prompt. Use --non-interactive --chezmoi-purge=y|n."
+	fi
+
+	confirm "$prompt"
+}
+
 should_install_openclaw() {
 	local prompt="$1"
 
@@ -244,6 +288,15 @@ should_install_openclaw() {
 	fi
 
 	confirm "$prompt"
+}
+
+purge_chezmoi_if_requested() {
+	if should_purge_chezmoi "Purge chezmoi now with 'chezmoi purge --force'?"; then
+		log "Purging chezmoi..."
+		run chezmoi purge --force
+	else
+		log "Skipping chezmoi purge."
+	fi
 }
 
 is_container() {
@@ -947,6 +1000,7 @@ install_chezmoi_and_apply() {
 		log "Chezmoi already initialized."
 		if should_apply_chezmoi "Apply chezmoi dotfiles now?"; then
 			run chezmoi apply
+			purge_chezmoi_if_requested
 		else
 			log "Skipping chezmoi apply. Run 'chezmoi apply' manually later."
 		fi
@@ -955,6 +1009,7 @@ install_chezmoi_and_apply() {
 
 	if should_apply_chezmoi "Initialize and apply chezmoi from ${DOTFILES_REPO_URL}?"; then
 		run chezmoi init --apply "$DOTFILES_REPO_URL"
+		purge_chezmoi_if_requested
 	else
 		log "Skipping chezmoi init. Run 'chezmoi init --apply <repo>' manually later."
 	fi

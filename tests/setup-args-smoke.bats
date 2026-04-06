@@ -4,49 +4,67 @@ REPO_ROOT="$(cd "$(dirname "$BATS_TEST_FILENAME")/.." && pwd)"
 SETUP_SCRIPT="${REPO_ROOT}/scripts/setup.sh"
 
 @test "--help prints usage and exits 0" {
-  run "$SETUP_SCRIPT" --help
-  [ "$status" -eq 0 ]
-  [[ "$output" == *"Usage: scripts/setup.sh"* ]]
+	run "$SETUP_SCRIPT" --help
+	[ "$status" -eq 0 ]
+	[[ "$output" == *"Usage: scripts/setup.sh"* ]]
 }
 
 @test "--non-interactive requires --chezmoi-apply" {
-  run "$SETUP_SCRIPT" --non-interactive
-  [ "$status" -eq 1 ]
-  [[ "$output" == *"--chezmoi-apply=y|n is required when --non-interactive is set."* ]]
+	run "$SETUP_SCRIPT" --non-interactive
+	[ "$status" -eq 1 ]
+	[[ "$output" == *"--chezmoi-apply=y|n is required when --non-interactive is set."* ]]
 }
 
-@test "--non-interactive requires --openclaw-install after --chezmoi-apply is provided" {
-  run "$SETUP_SCRIPT" --non-interactive --chezmoi-apply=y
-  [ "$status" -eq 1 ]
-  [[ "$output" == *"--openclaw-install=y|n is required when --non-interactive is set."* ]]
+@test "--non-interactive requires --chezmoi-purge after --chezmoi-apply is provided" {
+	run "$SETUP_SCRIPT" --non-interactive --chezmoi-apply=y
+	[ "$status" -eq 1 ]
+	[[ "$output" == *"--chezmoi-purge=y|n is required when --non-interactive is set."* ]]
+}
+
+@test "--non-interactive requires --openclaw-install after chezmoi choices are provided" {
+	run "$SETUP_SCRIPT" --non-interactive --chezmoi-apply=y --chezmoi-purge=n
+	[ "$status" -eq 1 ]
+	[[ "$output" == *"--openclaw-install=y|n is required when --non-interactive is set."* ]]
 }
 
 @test "--chezmoi-apply rejects invalid values in non-interactive mode" {
-  run "$SETUP_SCRIPT" --non-interactive --chezmoi-apply=maybe --openclaw-install=n
-  [ "$status" -eq 1 ]
-  [[ "$output" == *"Invalid value for --chezmoi-apply: maybe. Use y or n."* ]]
+	run "$SETUP_SCRIPT" --non-interactive --chezmoi-apply=maybe --chezmoi-purge=n --openclaw-install=n
+	[ "$status" -eq 1 ]
+	[[ "$output" == *"Invalid value for --chezmoi-apply: maybe. Use y or n."* ]]
 }
 
 @test "--chezmoi-apply is rejected without --non-interactive" {
-  run "$SETUP_SCRIPT" --chezmoi-apply=y
-  [ "$status" -eq 1 ]
-  [[ "$output" == *"--chezmoi-apply is only valid with --non-interactive."* ]]
+	run "$SETUP_SCRIPT" --chezmoi-apply=y
+	[ "$status" -eq 1 ]
+	[[ "$output" == *"--chezmoi-apply is only valid with --non-interactive."* ]]
+}
+
+@test "--chezmoi-purge rejects invalid values in non-interactive mode" {
+	run "$SETUP_SCRIPT" --non-interactive --chezmoi-apply=n --chezmoi-purge=maybe --openclaw-install=n
+	[ "$status" -eq 1 ]
+	[[ "$output" == *"Invalid value for --chezmoi-purge: maybe. Use y or n."* ]]
+}
+
+@test "--chezmoi-purge is rejected without --non-interactive" {
+	run "$SETUP_SCRIPT" --chezmoi-purge=y
+	[ "$status" -eq 1 ]
+	[[ "$output" == *"--chezmoi-purge is only valid with --non-interactive."* ]]
 }
 
 @test "--openclaw-install rejects invalid values in non-interactive mode" {
-  run "$SETUP_SCRIPT" --non-interactive --chezmoi-apply=n --openclaw-install=maybe
-  [ "$status" -eq 1 ]
-  [[ "$output" == *"Invalid value for --openclaw-install: maybe. Use y or n."* ]]
+	run "$SETUP_SCRIPT" --non-interactive --chezmoi-apply=n --chezmoi-purge=n --openclaw-install=maybe
+	[ "$status" -eq 1 ]
+	[[ "$output" == *"Invalid value for --openclaw-install: maybe. Use y or n."* ]]
 }
 
 @test "--openclaw-install is rejected without --non-interactive" {
-  run "$SETUP_SCRIPT" --openclaw-install=y
-  [ "$status" -eq 1 ]
-  [[ "$output" == *"--openclaw-install is only valid with --non-interactive."* ]]
+	run "$SETUP_SCRIPT" --openclaw-install=y
+	[ "$status" -eq 1 ]
+	[[ "$output" == *"--openclaw-install is only valid with --non-interactive."* ]]
 }
 
 @test "interactive Linux startup prompt requires a tty" {
-  run bash -lc "function uname(){ echo Linux; }; export -f uname; printf 'n\n' | \"$SETUP_SCRIPT\""
-  [ "$status" -eq 1 ]
-  [[ "$output" == *"Interactive mode requires a TTY for the Linux startup confirmation."* ]]
+	run bash -lc "function uname(){ echo Linux; }; export -f uname; printf 'n\n' | \"$SETUP_SCRIPT\""
+	[ "$status" -eq 1 ]
+	[[ "$output" == *"Interactive mode requires a TTY for the Linux startup confirmation."* ]]
 }

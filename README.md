@@ -29,6 +29,7 @@ Installer scripts for macOS, Linux, and Windows that bootstrap core CLI tools an
 - Installs `zsh` via native Linux packages when needed
 - On Linux, adds the detected `zsh` path to `/etc/shells` when needed and then attempts to change the login shell to that path after zsh setup
 - Installs chezmoi and applies dotfiles from `https://github.com/kevinmhk/dotfiles`
+- Prompts after a successful chezmoi apply/init flow whether to run `chezmoi purge --force`
 - Ensures `~/workspaces` exists
 - Creates `~/.config/chezmoi.toml` with auto-commit/auto-push and `delta` as diff pager
 - Installs Tailscale on Linux; reminds to install on macOS
@@ -171,11 +172,11 @@ Windows PowerShell:
 powershell -ExecutionPolicy Bypass -File .\scripts\setup-windows.ps1
 ```
 
-Non-interactive mode requires explicit choices for chezmoi and `openclaw`:
+Non-interactive mode requires explicit choices for chezmoi apply, chezmoi purge, and `openclaw`:
 
 ```bash
-scripts/setup.sh --non-interactive --chezmoi-apply=y --openclaw-install=y
-scripts/setup.sh --non-interactive --chezmoi-apply=n --openclaw-install=n
+scripts/setup.sh --non-interactive --chezmoi-apply=y --chezmoi-purge=n --openclaw-install=y
+scripts/setup.sh --non-interactive --chezmoi-apply=n --chezmoi-purge=n --openclaw-install=n
 ```
 
 ## Contributor Guide
@@ -236,9 +237,10 @@ Before running container tests, start Docker Desktop.
 - After the Linux build tool step finishes in default interactive mode, the script asks whether to install optional VPS remote GUI packages. On Debian-based systems, `Y`, `y`, or pressing Enter installs `xauth`, `x11-apps`, `xvfb`, `x11vnc`, `openbox`, `python3-xdg`, `menu`, `x11-utils`, and Google Chrome. On RHEL-based systems, that flow currently installs only Google Chrome and prints a reminder that the GUI package bundle is not implemented yet.
 - On Linux, privileged package installs use `sudo` in default interactive mode and `sudo -n` in `--non-interactive` mode.
 - On Linux, the script installs `zsh` via `apt-get`, `dnf`, or `yum` when needed, then adds the detected `zsh` path to `/etc/shells` when needed and attempts `chsh -s <detected-zsh-path>`; in `--non-interactive` mode it prints a reminder instead of prompting.
+- After a successful `chezmoi apply` or `chezmoi init --apply`, the script prompts whether to run `chezmoi purge --force`.
 - The script prompts for chezmoi apply/init decisions in default interactive mode.
 - The script also prompts whether to install `openclaw` in default interactive mode.
-- Use `--non-interactive` only with both `--chezmoi-apply=y|n` and `--openclaw-install=y|n`.
+- Use `--non-interactive` only with `--chezmoi-apply=y|n`, `--chezmoi-purge=y|n`, and `--openclaw-install=y|n`.
 - On Linux, Homebrew is installed under `/home/linuxbrew/.linuxbrew` by default.
 - On Windows, `vcredist2022` may trigger a Windows confirmation dialog during `scoop install`.
 - The Windows script does not edit the PowerShell profile; it prints a reminder instead.
