@@ -22,6 +22,7 @@ Installer scripts for macOS, Linux, and Windows that bootstrap core CLI tools an
 - Installs Linux build tools via `build-essential` on Debian-based systems or `Development Tools` on RHEL-based systems
 - Installs espeak-ng on Linux via apt-get or yum
 - Prompts on Linux whether to install optional VPS remote GUI packages and Google Chrome
+- After opting into the Linux VPS GUI package flow, prompts whether to clone and deploy the VPS GUI/Openbox start scripts from `https://github.com/kevinmhk/vps-gui-scripts`
 - Installs nvm and latest LTS Node.js
 - Installs npm global packages
 - Prompts whether to install `openclaw` via npm
@@ -235,6 +236,7 @@ Before running container tests, start Docker Desktop.
 - On Linux in default interactive mode, the script first asks you to confirm that you are running it as a non-root user with sudo permission; `Y`, `y`, or pressing Enter continues, while `N` or `n` exits immediately.
 - On Linux, build tool bootstrap uses `apt-get install -y build-essential` on Debian-based systems and `dnf group install "Development Tools"` or `yum groupinstall "Development Tools"` on RHEL-based systems when `gcc` and `make` are not already present.
 - After the Linux build tool step finishes in default interactive mode, the script asks whether to install optional VPS remote GUI packages. On Debian-based systems, `Y`, `y`, or pressing Enter installs `xauth`, `x11-apps`, `xvfb`, `x11vnc`, `openbox`, `python3-xdg`, `menu`, `x11-utils`, and Google Chrome. On RHEL-based systems, that flow currently installs only Google Chrome and prints a reminder that the GUI package bundle is not implemented yet.
+- If the Linux VPS GUI package flow is accepted, the script then asks whether to set up the VPS GUI and Openbox start scripts. If accepted, it ensures `~/workspaces` exists, clones `https://github.com/kevinmhk/vps-gui-scripts` into that directory when needed, and runs `bash ./deploy.sh` from the repo's `scripts/` directory.
 - On Linux, privileged package installs use `sudo` in default interactive mode and `sudo -n` in `--non-interactive` mode.
 - On Linux, the script installs `zsh` via `apt-get`, `dnf`, or `yum` when needed, then adds the detected `zsh` path to `/etc/shells` when needed and attempts `chsh -s <detected-zsh-path>`; in `--non-interactive` mode it prints a reminder instead of prompting.
 - After a successful `chezmoi apply` or `chezmoi init --apply`, the script prompts whether to run `chezmoi purge --force`.

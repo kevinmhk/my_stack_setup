@@ -230,6 +230,24 @@ should_install_linux_vps_gui_packages() {
 	confirm "$prompt" y
 }
 
+should_setup_vps_gui_start_scripts() {
+	local prompt="$1"
+
+	if [ "$OS_NAME" != "Linux" ]; then
+		return 1
+	fi
+
+	if [ "$NONINTERACTIVE" -eq 1 ]; then
+		return 1
+	fi
+
+	if ! [ -t 0 ]; then
+		abort "Interactive mode requires a TTY for the VPS GUI start script prompt."
+	fi
+
+	confirm "$prompt" y
+}
+
 should_apply_chezmoi() {
 	local prompt="$1"
 
@@ -268,6 +286,41 @@ should_purge_chezmoi() {
 	fi
 
 	confirm "$prompt"
+}
+
+setup_vps_gui_start_scripts_if_requested() {
+	local workspace_dir="${HOME}/workspaces"
+	local repo_dir="${workspace_dir}/vps-gui-scripts"
+	local deploy_dir="${repo_dir}/scripts"
+	local deploy_script="${deploy_dir}/deploy.sh"
+
+	if ! should_setup_vps_gui_start_scripts "Set up the start scripts for the VPS GUI and Openbox session now?"; then
+		log "Skipping VPS GUI and Openbox start script setup."
+		return 0
+	fi
+
+	ensure_workspaces_dir
+	brew_install_if_missing git
+
+	if [ -d "$repo_dir" ]; then
+		log "VPS GUI scripts repo already exists at ${repo_dir}."
+	else
+		log "Cloning VPS GUI scripts into ${workspace_dir}..."
+		(
+			cd "$workspace_dir"
+			run git clone https://github.com/kevinmhk/vps-gui-scripts.git
+		)
+	fi
+
+	if [ ! -f "$deploy_script" ]; then
+		abort "Expected deploy script not found at ${deploy_script}"
+	fi
+
+	log "Running VPS GUI start script deploy.sh..."
+	(
+		cd "$deploy_dir"
+		run bash ./deploy.sh
+	)
 }
 
 should_install_openclaw() {
@@ -726,6 +779,7 @@ install_linux_vps_gui_packages() {
 
 		if command_exists google-chrome || command_exists google-chrome-stable; then
 			log "Google Chrome already installed."
+			setup_vps_gui_start_scripts_if_requested
 			return 0
 		fi
 
@@ -743,6 +797,7 @@ install_linux_vps_gui_packages() {
 		run_sudo "sudo is required to fix Google Chrome package dependencies." apt --fix-broken install -y
 
 		run rm -f "$chrome_deb"
+		setup_vps_gui_start_scripts_if_requested
 		return 0
 	fi
 
@@ -750,6 +805,7 @@ install_linux_vps_gui_packages() {
 		if command_exists google-chrome || command_exists google-chrome-stable; then
 			log "Google Chrome already installed."
 			add_reminder "Reminder: The optional Linux VPS remote GUI package bundle is currently only implemented for Debian-based systems. On this RHEL-based system, Google Chrome is already installed."
+			setup_vps_gui_start_scripts_if_requested
 			return 0
 		fi
 
@@ -770,6 +826,7 @@ install_linux_vps_gui_packages() {
 		fi
 
 		run rm -f "$chrome_rpm"
+		setup_vps_gui_start_scripts_if_requested
 		return 0
 	fi
 
@@ -1178,9 +1235,10 @@ main() {
 	run brew update
 
 	ensure_linux_build_essential
-	install_linux_vps_gui_packages
+	ensure_workspaces_dir
 	install_brew_formulae
 	install_linux_zsh
+	install_linux_vps_gui_packages
 	install_brew_casks
 	install_dbeaver_linux
 	install_espeak_ng
@@ -1195,7 +1253,6 @@ main() {
 	install_vim_plug
 	install_nvchad
 	install_harlequin
-	ensure_workspaces_dir
 	ensure_chezmoi_config
 	install_chezmoi_and_apply
 	remind_flutter_install
