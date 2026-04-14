@@ -69,6 +69,7 @@ Homebrew formulae:
 - helix
 - git
 - git-delta
+- glances
 - glow
 - jq
 - llama.cpp

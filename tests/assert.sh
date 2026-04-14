@@ -235,6 +235,7 @@ main() {
 	for pkg in "${formulae[@]}"; do
 		assert_brew_formula_or_command "$pkg" || true
 	done
+	assert_brew_formula_or_command glances || true
 
 	if [ "$OS_NAME" = "Darwin" ]; then
 		local casks=(
