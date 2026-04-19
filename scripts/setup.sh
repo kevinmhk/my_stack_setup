@@ -998,6 +998,44 @@ install_dbeaver_linux() {
 	fi
 }
 
+install_linux_bubblewrap() {
+	if [ "$OS_NAME" != "Linux" ]; then
+		return 0
+	fi
+
+	if command_exists bwrap; then
+		log "bubblewrap already installed."
+		return 0
+	fi
+
+	if command_exists apt-get; then
+		if command_exists dpkg-query &&
+			dpkg-query -W -f='${Status}' bubblewrap 2>/dev/null | grep -q '^install ok installed$'; then
+			log "bubblewrap already installed."
+			return 0
+		fi
+
+		log "Installing bubblewrap via apt-get..."
+		run_sudo "sudo is required to install bubblewrap." apt-get update
+		run_sudo "sudo is required to install bubblewrap." apt-get install -y bubblewrap
+		return 0
+	fi
+
+	if command_exists dnf; then
+		log "Installing bubblewrap via dnf..."
+		run_sudo "sudo is required to install bubblewrap." dnf -y install bubblewrap
+		return 0
+	fi
+
+	if command_exists yum; then
+		log "Installing bubblewrap via yum..."
+		run_sudo "sudo is required to install bubblewrap." yum -y install bubblewrap
+		return 0
+	fi
+
+	abort "Neither apt-get, dnf, nor yum is available to install bubblewrap."
+}
+
 install_espeak_ng() {
 	if [ "$OS_NAME" != "Linux" ]; then
 		return 0
@@ -1320,6 +1358,7 @@ main() {
 	run brew update
 
 	ensure_linux_build_essential
+	install_linux_bubblewrap
 	ensure_workspaces_dir
 	install_brew_formulae
 	install_linux_zsh

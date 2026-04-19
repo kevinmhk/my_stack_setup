@@ -309,6 +309,7 @@ main() {
 		record_failure "ty binary missing at ${HOME}/.local/bin/ty"
 	fi
 	if [ "$OS_NAME" = "Linux" ]; then
+		assert_command bwrap || true
 		assert_command espeak-ng || true
 		if is_container; then
 			log "Container detected: skipping Tailscale assertion."
