@@ -119,7 +119,7 @@ Homebrew casks (macOS only):
 npm globals:
 - agent-browser
 - @playwright/cli@latest
-- @mariozechner/pi-coding-agent
+- @earendil-works/pi-coding-agent
 - @mermaid-js/mermaid-cli
 - bun
 - firebase-tools
