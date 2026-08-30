@@ -41,7 +41,7 @@ Primary script sections reviewed:
 - `install_nvm_and_node()` at [scripts/setup.sh](/home/kevinmhk/workspaces/my_stack_setup/scripts/setup.sh:1065)
 - `install_npm_globals()` at [scripts/setup.sh](/home/kevinmhk/workspaces/my_stack_setup/scripts/setup.sh:1118)
 - `install_claude_code_linux()` at [scripts/setup.sh](/home/kevinmhk/workspaces/my_stack_setup/scripts/setup.sh:1144)
-- `install_openclaw()` at [scripts/setup.sh](/home/kevinmhk/workspaces/my_stack_setup/scripts/setup.sh:1162)
+- `install_hermes_agent()` at [scripts/setup.sh](/home/kevinmhk/workspaces/my_stack_setup/scripts/setup.sh:1161)
 - `install_chezmoi_and_apply()` at [scripts/setup.sh](/home/kevinmhk/workspaces/my_stack_setup/scripts/setup.sh:1176)
 - `install_agent_browser_runtime()` at [scripts/setup.sh](/home/kevinmhk/workspaces/my_stack_setup/scripts/setup.sh:1198)
 - `install_or_notify_tailscale()` at [scripts/setup.sh](/home/kevinmhk/workspaces/my_stack_setup/scripts/setup.sh:1209)
@@ -99,7 +99,8 @@ The table below focuses on the practical Ansible translation, not a literal shel
 | `oh-my-zsh` | `install_oh_my_zsh` | Prefer `ansible.builtin.git` to clone `~/.oh-my-zsh`; use `command` only for any truly unavoidable post-step. | This should not remain a remote `curl | sh` if migrated to Ansible. |
 | Login shell | `ensure_linux_zsh_login_shell` | `ansible.builtin.lineinfile` for `/etc/shells`, `ansible.builtin.user` for the login shell | Very good fit. |
 | `nvm` install and shell sourcing | `install_nvm_and_node` | Likely `ansible.builtin.git` or `ansible.builtin.command` for `nvm` install, then `command`/`shell` for `nvm install --lts` in a sourced shell. | Possible, but awkward. This is one of the least elegant parts of the migration. |
-| npm globals | `install_npm_globals`, `install_openclaw` | `community.general.npm` if `npm` is available in a stable path; otherwise `command` with sourced `nvm`. | The more tightly Node is coupled to `nvm`, the more shell-heavy this part becomes. |
+| npm globals | `install_npm_globals` | `community.general.npm` if `npm` is available in a stable path; otherwise `command` with sourced `nvm`. | The more tightly Node is coupled to `nvm`, the more shell-heavy this part becomes. |
+| Hermes Agent | `install_hermes_agent` | `ansible.builtin.shell` guarded by a `hermes` command check. | The official installer is an explicit shell-backed exception. |
 | Claude Code Linux installer | `install_claude_code_linux` | `ansible.builtin.shell` or `ansible.builtin.command` guarded by checks | No obvious first-class Ansible module for this installer flow. |
 | `agent-browser install` runtime step | `install_agent_browser_runtime` | `ansible.builtin.command` | This is a post-install imperative command, not a declarative resource. |
 | Tailscale | `install_or_notify_tailscale` | Prefer native packages/repo setup if you standardize it. If you keep the vendor script, use explicit `command`/`shell`. | The current `curl | sh` pattern is automatable but less desirable than repo-based package management. |
@@ -120,7 +121,7 @@ The script currently asks the operator about:
 - whether to deploy VPS GUI start scripts;
 - whether to apply `chezmoi`;
 - whether to purge `chezmoi`;
-- whether to install `openclaw`;
+- whether to install Hermes Agent;
 - whether to install welcome-message/tool repos.
 
 That pattern is natural in shell and unnatural in Ansible. The better Ansible model is a variable contract such as:
@@ -131,7 +132,7 @@ setup_install_vps_gui: false
 setup_install_vps_gui_scripts: false
 setup_chezmoi_apply: true
 setup_chezmoi_purge: false
-setup_install_openclaw: false
+setup_install_hermes_agent: false
 setup_install_shell_welcome_repos: false
 ```
 
@@ -209,7 +210,6 @@ Suggested responsibilities:
 - `node`
   - Node runtime strategy
   - npm global packages
-  - optional `openclaw`
   - `agent-browser install`
 
 - `shell`
@@ -233,6 +233,7 @@ Suggested responsibilities:
 
 - `extras`
   - `Claude Code`
+  - optional Hermes Agent
   - `Tailscale`
   - reminders/debug summaries
 

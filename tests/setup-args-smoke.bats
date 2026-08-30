@@ -21,14 +21,14 @@ SETUP_SCRIPT="${REPO_ROOT}/scripts/setup.sh"
 	[[ "$output" == *"--chezmoi-purge=y|n is required when --non-interactive is set."* ]]
 }
 
-@test "--non-interactive requires --openclaw-install after chezmoi choices are provided" {
+@test "--non-interactive requires --hermes-install after chezmoi choices are provided" {
 	run "$SETUP_SCRIPT" --non-interactive --chezmoi-apply=y --chezmoi-purge=n
 	[ "$status" -eq 1 ]
-	[[ "$output" == *"--openclaw-install=y|n is required when --non-interactive is set."* ]]
+	[[ "$output" == *"--hermes-install=y|n is required when --non-interactive is set."* ]]
 }
 
 @test "--chezmoi-apply rejects invalid values in non-interactive mode" {
-	run "$SETUP_SCRIPT" --non-interactive --chezmoi-apply=maybe --chezmoi-purge=n --openclaw-install=n
+	run "$SETUP_SCRIPT" --non-interactive --chezmoi-apply=maybe --chezmoi-purge=n --hermes-install=n
 	[ "$status" -eq 1 ]
 	[[ "$output" == *"Invalid value for --chezmoi-apply: maybe. Use y or n."* ]]
 }
@@ -40,7 +40,7 @@ SETUP_SCRIPT="${REPO_ROOT}/scripts/setup.sh"
 }
 
 @test "--chezmoi-purge rejects invalid values in non-interactive mode" {
-	run "$SETUP_SCRIPT" --non-interactive --chezmoi-apply=n --chezmoi-purge=maybe --openclaw-install=n
+	run "$SETUP_SCRIPT" --non-interactive --chezmoi-apply=n --chezmoi-purge=maybe --hermes-install=n
 	[ "$status" -eq 1 ]
 	[[ "$output" == *"Invalid value for --chezmoi-purge: maybe. Use y or n."* ]]
 }
@@ -51,16 +51,16 @@ SETUP_SCRIPT="${REPO_ROOT}/scripts/setup.sh"
 	[[ "$output" == *"--chezmoi-purge is only valid with --non-interactive."* ]]
 }
 
-@test "--openclaw-install rejects invalid values in non-interactive mode" {
-	run "$SETUP_SCRIPT" --non-interactive --chezmoi-apply=n --chezmoi-purge=n --openclaw-install=maybe
+@test "--hermes-install rejects invalid values in non-interactive mode" {
+	run "$SETUP_SCRIPT" --non-interactive --chezmoi-apply=n --chezmoi-purge=n --hermes-install=maybe
 	[ "$status" -eq 1 ]
-	[[ "$output" == *"Invalid value for --openclaw-install: maybe. Use y or n."* ]]
+	[[ "$output" == *"Invalid value for --hermes-install: maybe. Use y or n."* ]]
 }
 
-@test "--openclaw-install is rejected without --non-interactive" {
-	run "$SETUP_SCRIPT" --openclaw-install=y
+@test "--hermes-install is rejected without --non-interactive" {
+	run "$SETUP_SCRIPT" --hermes-install=y
 	[ "$status" -eq 1 ]
-	[[ "$output" == *"--openclaw-install is only valid with --non-interactive."* ]]
+	[[ "$output" == *"--hermes-install is only valid with --non-interactive."* ]]
 }
 
 @test "interactive Linux startup prompt requires a tty" {

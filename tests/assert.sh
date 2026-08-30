@@ -283,6 +283,9 @@ main() {
 	assert_command claude || true
 	assert_command chezmoi || true
 	assert_command zsh || true
+	if [ "${ASSERT_HERMES:-0}" = "1" ]; then
+		assert_command hermes || true
+	fi
 	if [ ! -d "$HOME/.oh-my-zsh" ]; then
 		record_failure "oh-my-zsh not installed at ${HOME}/.oh-my-zsh"
 	fi

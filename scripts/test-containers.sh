@@ -41,7 +41,7 @@ run_image() {
 	local dockerfile="$2"
 	local logfile="${LOG_DIR}/test_${name}.log"
 	local container_name="my_stack_setup_${name}"
-	local test_command="scripts/setup.sh --non-interactive --chezmoi-apply=n --chezmoi-purge=n --openclaw-install=n && tests/assert.sh"
+	local test_command="scripts/setup.sh --non-interactive --chezmoi-apply=n --chezmoi-purge=n --hermes-install=n && tests/assert.sh"
 
 	log "Building ${name} image..."
 	docker build -f "$dockerfile" -t "$container_name" "$REPO_ROOT"

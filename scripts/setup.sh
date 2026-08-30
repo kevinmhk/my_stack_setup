@@ -5,7 +5,7 @@ set -euo pipefail
 NONINTERACTIVE=0
 CHEZMOI_APPLY_CHOICE=""
 CHEZMOI_PURGE_CHOICE=""
-OPENCLAW_INSTALL_CHOICE=""
+HERMES_INSTALL_CHOICE=""
 
 DOTFILES_REPO_URL="https://github.com/kevinmhk/dotfiles.git"
 OS_NAME="$(uname -s)"
@@ -53,13 +53,13 @@ run_sudo() {
 
 print_usage() {
 	cat <<'EOF'
-Usage: scripts/setup.sh [--non-interactive --chezmoi-apply=y|n --chezmoi-purge=y|n --openclaw-install=y|n] [--help]
+Usage: scripts/setup.sh [--non-interactive --chezmoi-apply=y|n --chezmoi-purge=y|n --hermes-install=y|n] [--help]
 
 Options:
   --non-interactive       Run without prompts.
   --chezmoi-apply=y|n     Required with --non-interactive; controls chezmoi apply/init --apply.
   --chezmoi-purge=y|n     Required with --non-interactive; controls post-apply chezmoi purge.
-  --openclaw-install=y|n  Required with --non-interactive; controls optional openclaw npm install.
+  --hermes-install=y|n    Required with --non-interactive; controls optional Hermes Agent installation.
   --help, -h              Show this help message.
 EOF
 }
@@ -84,12 +84,12 @@ parse_args() {
 			shift || abort "Missing value for --chezmoi-purge. Use y or n."
 			CHEZMOI_PURGE_CHOICE="$1"
 			;;
-		--openclaw-install=*)
-			OPENCLAW_INSTALL_CHOICE="${1#*=}"
+		--hermes-install=*)
+			HERMES_INSTALL_CHOICE="${1#*=}"
 			;;
-		--openclaw-install)
-			shift || abort "Missing value for --openclaw-install. Use y or n."
-			OPENCLAW_INSTALL_CHOICE="$1"
+		--hermes-install)
+			shift || abort "Missing value for --hermes-install. Use y or n."
+			HERMES_INSTALL_CHOICE="$1"
 			;;
 		--help | -h)
 			print_usage
@@ -116,10 +116,10 @@ parse_args() {
 		;;
 	esac
 
-	case "$OPENCLAW_INSTALL_CHOICE" in
+	case "$HERMES_INSTALL_CHOICE" in
 	"" | y | Y | n | N) ;;
 	*)
-		abort "Invalid value for --openclaw-install: ${OPENCLAW_INSTALL_CHOICE}. Use y or n."
+		abort "Invalid value for --hermes-install: ${HERMES_INSTALL_CHOICE}. Use y or n."
 		;;
 	esac
 
@@ -132,8 +132,8 @@ parse_args() {
 			abort "--chezmoi-purge=y|n is required when --non-interactive is set."
 		fi
 
-		if [ -z "$OPENCLAW_INSTALL_CHOICE" ]; then
-			abort "--openclaw-install=y|n is required when --non-interactive is set."
+		if [ -z "$HERMES_INSTALL_CHOICE" ]; then
+			abort "--hermes-install=y|n is required when --non-interactive is set."
 		fi
 	fi
 
@@ -145,8 +145,8 @@ parse_args() {
 		abort "--chezmoi-purge is only valid with --non-interactive."
 	fi
 
-	if [ "$NONINTERACTIVE" -eq 0 ] && [ -n "$OPENCLAW_INSTALL_CHOICE" ]; then
-		abort "--openclaw-install is only valid with --non-interactive."
+	if [ "$NONINTERACTIVE" -eq 0 ] && [ -n "$HERMES_INSTALL_CHOICE" ]; then
+		abort "--hermes-install is only valid with --non-interactive."
 	fi
 
 	if [ "$NONINTERACTIVE" -eq 1 ]; then
@@ -407,21 +407,21 @@ install_shell_welcome_messages_and_tools_reminder_if_requested() {
 	done
 }
 
-should_install_openclaw() {
+should_install_hermes_agent() {
 	local prompt="$1"
 
 	if [ "$NONINTERACTIVE" -eq 1 ]; then
-		case "$OPENCLAW_INSTALL_CHOICE" in
+		case "$HERMES_INSTALL_CHOICE" in
 		y | Y) return 0 ;;
 		n | N) return 1 ;;
 		*)
-			abort "Invalid non-interactive openclaw choice. Use --openclaw-install=y|n."
+			abort "Invalid non-interactive Hermes Agent choice. Use --hermes-install=y|n."
 			;;
 		esac
 	fi
 
 	if ! [ -t 0 ]; then
-		abort "Interactive mode requires a TTY for openclaw prompt. Use --non-interactive --openclaw-install=y|n."
+		abort "Interactive mode requires a TTY for Hermes Agent prompt. Use --non-interactive --hermes-install=y|n."
 	fi
 
 	confirm "$prompt"
@@ -1158,17 +1158,21 @@ install_claude_code_linux() {
 	run bash -c "curl -fsSL https://claude.ai/install.sh | bash"
 }
 
-install_openclaw() {
-	if npm list -g --depth=0 openclaw >/dev/null 2>&1; then
-		log "openclaw already installed."
+install_hermes_agent() {
+	if command_exists hermes; then
+		log "Hermes Agent already installed."
 		return 0
 	fi
 
-	if should_install_openclaw "Install openclaw via npm?"; then
-		log "Installing openclaw via npm..."
-		run npm install -g openclaw
+	if should_install_hermes_agent "Install Hermes Agent via the official installer?"; then
+		if ! command_exists curl; then
+			abort "curl is required to install Hermes Agent."
+		fi
+
+		log "Installing Hermes Agent via the official installer..."
+		run bash -c "curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash"
 	else
-		log "Skipping openclaw install."
+		log "Skipping Hermes Agent install."
 	fi
 }
 
@@ -1363,7 +1367,7 @@ main() {
 	install_espeak_ng
 	install_nvm_and_node
 	install_npm_globals
-	install_openclaw
+	install_hermes_agent
 	install_oh_my_zsh
 	ensure_linux_zsh_login_shell
 	install_claude_code_linux

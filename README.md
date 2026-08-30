@@ -26,7 +26,7 @@ Installer scripts for macOS, Linux, and Windows that bootstrap core CLI tools an
 - After opting into the Linux VPS GUI package flow, prompts whether to clone and deploy the VPS GUI/Openbox start scripts from `https://github.com/kevinmhk/vps-gui-scripts`
 - Installs nvm and latest LTS Node.js
 - Installs npm global packages
-- Prompts whether to install `openclaw` via npm
+- Prompts whether to install Hermes Agent via its official installer
 - Installs oh-my-zsh
 - Installs `zsh` via native Linux packages when needed
 - On Linux, adds the detected `zsh` path to `/etc/shells` when needed and then attempts to change the login shell to that path after zsh setup
@@ -123,7 +123,6 @@ npm globals:
 - @mermaid-js/mermaid-cli
 - bun
 - firebase-tools
-- openclaw (optional; prompted during setup)
 - @openai/codex (Linux only)
 
 uv tools:
@@ -133,6 +132,7 @@ uv tools:
 
 Linux native installs:
 - Claude Code (via `curl -fsSL https://claude.ai/install.sh | bash`)
+- Hermes Agent (optional; via `curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash`)
 
 Linux system packages:
 - zsh
@@ -175,11 +175,11 @@ Windows PowerShell:
 powershell -ExecutionPolicy Bypass -File .\scripts\setup-windows.ps1
 ```
 
-Non-interactive mode requires explicit choices for chezmoi apply, chezmoi purge, and `openclaw`:
+Non-interactive mode requires explicit choices for chezmoi apply, chezmoi purge, and Hermes Agent:
 
 ```bash
-scripts/setup.sh --non-interactive --chezmoi-apply=y --chezmoi-purge=n --openclaw-install=y
-scripts/setup.sh --non-interactive --chezmoi-apply=n --chezmoi-purge=n --openclaw-install=n
+scripts/setup.sh --non-interactive --chezmoi-apply=y --chezmoi-purge=n --hermes-install=y
+scripts/setup.sh --non-interactive --chezmoi-apply=n --chezmoi-purge=n --hermes-install=n
 ```
 
 ## Contributor Guide
@@ -208,6 +208,12 @@ Assertions:
 
 ```bash
 tests/assert.sh
+```
+
+Assert Hermes Agent too when it was selected during setup:
+
+```bash
+ASSERT_HERMES=1 tests/assert.sh
 ```
 
 Windows assertions:
@@ -245,8 +251,8 @@ Before running container tests, start Docker Desktop.
 - After a successful `chezmoi apply` or `chezmoi init --apply`, the script prompts whether to run `chezmoi purge --force`.
 - After `install_chezmoi_and_apply` completes, the script prompts whether to install Shell Welcome Messages and Tools Reminder. If accepted, it ensures `~/workspaces` exists, clones `my_tools`, `zsh_zellij_ls_welcome_message`, `zsh_chezmoi_status_welcome_message`, `zsh_tmux_ls_welcome_message`, and `zsh_ai_agent_welcome_message`, then runs either `scripts/install.sh` or `scripts/deploy.sh` in each repo.
 - The script prompts for chezmoi apply/init decisions in default interactive mode.
-- The script also prompts whether to install `openclaw` in default interactive mode.
-- Use `--non-interactive` only with `--chezmoi-apply=y|n`, `--chezmoi-purge=y|n`, and `--openclaw-install=y|n`.
+- The script also prompts whether to install Hermes Agent in default interactive mode.
+- Use `--non-interactive` only with `--chezmoi-apply=y|n`, `--chezmoi-purge=y|n`, and `--hermes-install=y|n`.
 - On Linux, Homebrew is installed under `/home/linuxbrew/.linuxbrew` by default.
 - On Windows, `vcredist2022` may trigger a Windows confirmation dialog during `scoop install`.
 - The Windows script does not edit the PowerShell profile; it prints a reminder instead.
