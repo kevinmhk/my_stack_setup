@@ -1117,7 +1117,6 @@ install_nvm_and_node() {
 
 install_npm_globals() {
 	local npm_packages=(
-		@google/gemini-cli
 		agent-browser
 		@playwright/cli@latest
 		@mariozechner/pi-coding-agent
@@ -1302,10 +1301,6 @@ remind_env_onboarding() {
 	add_reminder "Reminder: Manually onboard your .env file to ${HOME}."
 }
 
-remind_gemini_extensions_install() {
-	add_reminder "Reminder: After signing in to gemini-cli, run scripts/install-gemini-extensions.sh."
-}
-
 remind_flutter_install() {
 	add_reminder "Reminder: Install Flutter manually."
 }
@@ -1384,7 +1379,6 @@ main() {
 	remind_vim_plug_install
 	remind_mason_install_all
 	remind_env_onboarding
-	remind_gemini_extensions_install
 	log "Base setup complete."
 	print_reminders
 }

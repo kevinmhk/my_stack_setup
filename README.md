@@ -43,7 +43,6 @@ Installer scripts for macOS, Linux, and Windows that bootstrap core CLI tools an
 - Prints a reminder to install Flutter manually
 - Prints a reminder to run `:MasonInstallAll` in Neovim
 - Prints a reminder to onboard `.env` to `$HOME`
-- Prints a reminder to run `scripts/install-gemini-extensions.sh` after signing in to Gemini CLI
 - Logs to stdout and to a timestamped file in `logs/`
 - Sets PowerShell execution policy to `RemoteSigned` for `CurrentUser` on Windows when needed
 - Installs Scoop on Windows if missing
@@ -118,7 +117,6 @@ Homebrew casks (macOS only):
 - xquartz
 
 npm globals:
-- @google/gemini-cli
 - agent-browser
 - @playwright/cli@latest
 - @mariozechner/pi-coding-agent

@@ -1,7 +1,7 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-- `scripts/` holds automation entrypoints: `setup.sh` (main installer), `install-gemini-extensions.sh`, and `test-containers.sh` (Docker-based tests).
+- `scripts/` holds automation entrypoints: `setup.sh` (main installer) and `test-containers.sh` (Docker-based tests).
 - `tests/` contains validation tooling. `assert.sh` is the primary post-setup check; Dockerfiles live in `tests/docker/ubuntu` and `tests/docker/centos`.
 - `logs/` is generated at runtime for setup and test runs.
 - `README.md` documents usage and installed packages.
