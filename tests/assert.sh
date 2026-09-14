@@ -196,6 +196,7 @@ main() {
 		fzf
 		gh
 		helix
+		herdr
 		git
 		git-delta
 		glow

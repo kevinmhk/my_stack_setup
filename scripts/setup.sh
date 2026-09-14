@@ -594,6 +594,7 @@ install_brew_formulae() {
 		fzf
 		gh
 		helix
+		herdr
 		git
 		git-delta
 		glances

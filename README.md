@@ -67,6 +67,7 @@ Homebrew formulae:
 - fzf
 - gh
 - helix
+- herdr
 - git
 - git-delta
 - glances
