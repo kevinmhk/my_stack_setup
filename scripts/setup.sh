@@ -617,6 +617,7 @@ install_brew_formulae() {
 		shellspec
 		shfmt
 		sqlite
+		sunshine
 		starship
 		tmux
 		uv
@@ -1355,6 +1356,8 @@ main() {
 	fi
 
 	run brew tap bats-core/bats-core
+	run brew tap lizardbyte/homebrew
+	run brew trust lizardbyte/homebrew
 	run brew update
 
 	ensure_linux_build_essential

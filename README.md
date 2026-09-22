@@ -91,6 +91,7 @@ Homebrew formulae:
 - shellspec
 - shfmt
 - sqlite
+- sunshine
 - starship
 - tmux
 - uv

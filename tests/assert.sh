@@ -218,6 +218,7 @@ main() {
 		shellspec
 		shfmt
 		sqlite
+		sunshine
 		starship
 		tmux
 		uv
