@@ -612,6 +612,7 @@ install_brew_formulae() {
 		qwen-code
 		qsv
 		pytest
+		restic
 		ripgrep
 		shellcheck
 		shellspec

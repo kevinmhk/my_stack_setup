@@ -213,6 +213,7 @@ main() {
 		qwen-code
 		qsv
 		pytest
+		restic
 		ripgrep
 		shellcheck
 		shellspec
