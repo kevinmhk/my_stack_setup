@@ -1124,6 +1124,7 @@ install_npm_globals() {
 		@playwright/cli@latest
 		@earendil-works/pi-coding-agent
 		@mermaid-js/mermaid-cli
+		@tobilu/qmd
 		bun
 		firebase-tools
 	)

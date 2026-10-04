@@ -271,6 +271,7 @@ main() {
 		@playwright/cli
 		@earendil-works/pi-coding-agent
 		@mermaid-js/mermaid-cli
+		@tobilu/qmd
 		bun
 		firebase-tools
 	)
@@ -282,6 +283,7 @@ main() {
 	for pkg in "${npm_packages[@]}"; do
 		assert_npm_global "$pkg" || true
 	done
+	assert_command qmd || true
 
 	assert_command claude || true
 	assert_command chezmoi || true
